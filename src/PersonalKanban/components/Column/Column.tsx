@@ -56,7 +56,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = (props) => {
         justifyContent="space-between"
         marginBottom={Boolean(description) ? 0.5 : 0}
       >
-        <Typography variant="h6" title={title} noWrap>
+        <Typography variant="subtitle1" title={title} noWrap style={{ lineHeight: 1.4 }}>
           <b>{title}</b>
         </Typography>
         <Box display="flex" alignItems="center">

@@ -6,17 +6,21 @@ import { makeStyles } from "@material-ui/core/styles";
 import Column from "PersonalKanban/components/Column";
 import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 import { Column as ColumnType } from "PersonalKanban/types";
-import { COLUMN_WIDTH } from "PersonalKanban/constants";
+import { COLUMN_WIDTH, COLUMN_MIN_WIDTH } from "PersonalKanban/constants";
 
 const useBoardStyles = makeStyles((theme) => ({
+  // 欄位寬度隨視窗自動分配：欄位少時加寬（最多 COLUMN_WIDTH），欄位多時縮窄（最少 COLUMN_MIN_WIDTH）
   root: {
-    height: "100vh",
-    display: "inline-flex",
-    width: "fit-content",
+    minHeight: "calc(100vh - 80px)",
+    display: "flex",
+    alignItems: "flex-start",
+    width: "100%",
   },
   column: {
-    width: COLUMN_WIDTH,
-    margin: theme.spacing(),
+    flex: `1 0 ${COLUMN_MIN_WIDTH}px`,
+    minWidth: COLUMN_MIN_WIDTH,
+    maxWidth: COLUMN_WIDTH,
+    margin: theme.spacing(0.5),
     height: "fit-content",
   },
 }));

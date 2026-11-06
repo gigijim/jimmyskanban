@@ -10,6 +10,27 @@ import KanbanCard from "PersonalKanban/components/KanbanCard";
 import Column, { ColumnCardList } from "PersonalKanban/components/Column";
 import { Column as ColumnType } from "PersonalKanban/types";
 import { DONE_SUFFIX, formatTime, splitRecords } from "PersonalKanban/services/Utils";
+import { DONE_PREVIEW } from "PersonalKanban/constants";
+
+// 每個欄位「已完成」區是否展開全部：只是畫面偏好，存在瀏覽器，不進備份
+const EXPAND_KEY = "jimmyskanban.doneExpanded";
+const readExpanded = (): { [id: string]: boolean } => {
+  try {
+    return JSON.parse(localStorage.getItem(EXPAND_KEY) || "{}") || {};
+  } catch (e) {
+    return {};
+  }
+};
+const writeExpanded = (id: string, value: boolean) => {
+  try {
+    const all = readExpanded();
+    if (value) all[id] = true;
+    else delete all[id];
+    localStorage.setItem(EXPAND_KEY, JSON.stringify(all));
+  } catch (e) {
+    /* 無法寫入時只影響本次畫面 */
+  }
+};
 
 type KanbanInnerColumnCardListProps = {
   column: ColumnType;
@@ -48,6 +69,20 @@ const useSectionStyles = makeStyles((theme) => ({
     borderRadius: 4,
     transition: "background-color .15s",
   },
+  toggle: {
+    display: "block",
+    width: "100%",
+    marginBottom: theme.spacing(0.5),
+    padding: "4px 0",
+    border: `1px dashed ${theme.palette.text.disabled}`,
+    borderRadius: 4,
+    background: "transparent",
+    color: theme.palette.text.secondary,
+    font: "inherit",
+    fontSize: "0.75rem",
+    cursor: "pointer",
+    "&:hover": { backgroundColor: theme.palette.action.hover },
+  },
   dropping: {
     backgroundColor: "rgba(0,0,0,0.06)",
   },
@@ -77,7 +112,18 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
 
   const { active, done } = React.useMemo(() => splitRecords(records), [records]);
   const activeColumn = React.useMemo(() => ({ ...column, records: active }), [column, active]);
-  const doneColumn = React.useMemo(() => ({ ...column, records: done }), [column, done]);
+  // 已完成區預設只顯示最新 DONE_PREVIEW 張（依完成時間新→舊），可展開全部
+  const [expanded, setExpanded] = React.useState(() => Boolean(readExpanded()[columnId]));
+  const toggleExpanded = React.useCallback(() => {
+    setExpanded((v) => {
+      writeExpanded(columnId, !v);
+      return !v;
+    });
+  }, [columnId]);
+  const doneColumn = React.useMemo(
+    () => ({ ...column, records: expanded ? done : done.slice(0, DONE_PREVIEW) }),
+    [column, done, expanded]
+  );
 
   const isDropDisabled = Boolean(wipEnabled) && wipLimit <= active.length;
 
@@ -126,6 +172,11 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
               />
               {provided.placeholder}
             </div>
+            {done.length > DONE_PREVIEW && (
+              <button type="button" className={classes.toggle} onClick={toggleExpanded}>
+                {expanded ? t("collapseDone") : t("showAllDone", { n: done.length - DONE_PREVIEW })}
+              </button>
+            )}
           </Box>
         )}
       </Droppable>

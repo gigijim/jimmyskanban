@@ -81,5 +81,7 @@
   "updateNow": "Обновить сейчас",
   "backupNewerSchema": "Эта копия создана более новой версией (новый формат данных). Сначала обновите приложение, затем повторите импорт.",
   "snapshotReason_beforeUpdate": "Перед обновлением",
-  "snapshotReason_beforeMigration": "Перед обновлением данных"
+  "snapshotReason_beforeMigration": "Перед обновлением данных",
+  "showAllDone": "Показать ещё {{n}} выполненных",
+  "collapseDone": "Свернуть выполненные"
 }

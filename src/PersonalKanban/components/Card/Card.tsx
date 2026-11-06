@@ -12,10 +12,8 @@ import { formatTime } from "PersonalKanban/services/Utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    // 原版固定 150px；加了三個時間與印章後改為最小高度
-    minHeight: 150,
+    // 原版固定 150px；改成依內容高度，排版更緊湊
     position: "relative",
-    paddingBottom: 40,
     "&:hover $stampEmpty": {
       opacity: 0.8,
     },
@@ -28,37 +26,48 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     wordBreak: "break-word",
     lineHeight: 1.3,
+    marginBottom: 2,
   },
   done: {
     textDecoration: "line-through",
-    opacity: 0.85,
+    opacity: 0.75,
   },
   description: {
-    maxHeight: "5rem",
-    minHeight: "2.5rem",
     display: "-webkit-box",
-    "-webkit-line-clamp": 4,
+    "-webkit-line-clamp": 3,
     "-webkit-box-orient": "vertical",
     overflow: "hidden",
     whiteSpace: "pre-line",
+    wordBreak: "break-word",
+    lineHeight: 1.35,
+    marginBottom: 2,
+  },
+  descriptionDone: {
+    "-webkit-line-clamp": 1,
+    opacity: 0.7,
+  },
+  footer: {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    gap: 4,
   },
   times: {
-    paddingRight: 88,
-    lineHeight: 1.45,
-    opacity: 0.8,
+    lineHeight: 1.35,
+    opacity: 0.75,
+    fontSize: "0.68rem",
+    minWidth: 0,
   },
   stamp: {
-    position: "absolute",
-    right: 8,
-    bottom: 8,
-    minWidth: 72,
-    height: 30,
-    padding: "0 8px",
+    flexShrink: 0,
+    minWidth: 60,
+    height: 24,
+    padding: "0 6px",
     background: "transparent",
     borderRadius: 6,
     fontFamily: "'DFKai-SB', 'BiauKai', 'KaiTi', serif",
     fontWeight: 900,
-    fontSize: 15,
+    fontSize: 13,
     letterSpacing: 1,
     cursor: "pointer",
     transform: "rotate(-8deg)",
@@ -69,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   stampEmpty: {
     border: `2px dashed ${theme.palette.text.disabled}`,
     color: theme.palette.text.secondary,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 400,
     fontFamily: "inherit",
     opacity: 0,
@@ -83,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     border: "3px double #2e7d32",
     color: "#2e7d32",
     borderRadius: 40,
-    backgroundColor: "rgba(46,125,50,.08)",
+    backgroundColor: "rgba(255,255,255,.35)",
   },
 }));
 
@@ -135,6 +144,18 @@ const Card: React.FC<CardProps> = (props) => {
     [record, onStamp]
   );
 
+  const done = stamp === "done";
+
+  // 滑鼠移到時間上：顯示完整的三個時間
+  const full = "YYYY/MM/DD HH:mm:ss";
+  const timesTitle = [
+    `${t("createdAt")}：${formatTime(createdAt, full)}`,
+    updatedAt ? `${t("updatedAt")}：${formatTime(updatedAt, full)}` : "",
+    completedAt ? `${t("completedAt")}：${formatTime(completedAt, full)}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   const stampLabel =
     stamp === "done" ? t("stampDone") : stamp === "important" ? t("stampImportant") : t("stamp");
 
@@ -149,7 +170,7 @@ const Card: React.FC<CardProps> = (props) => {
       {...rest}
     >
       <Box display="flex" alignItems="flex-start" justifyContent="space-between">
-        <Typography title={title} gutterBottom className={clsx(classes.title, stamp === "done" && classes.done)}>
+        <Typography title={title} className={clsx(classes.title, done && classes.done)}>
           <b>{title}</b>
         </Typography>
         <Box display="flex" alignItems="center" flexShrink={0}>
@@ -159,40 +180,46 @@ const Card: React.FC<CardProps> = (props) => {
           )}
         </Box>
       </Box>
-      <Typography
-        title={description}
-        className={classes.description}
-        variant="body2"
-        gutterBottom
-      >
-        {description}
-      </Typography>
-      <Typography component="div" variant="caption" className={classes.times}>
-        <div title={formatTime(createdAt, "YYYY/MM/DD HH:mm:ss")}>
-          {t("createdAt")}：{formatTime(createdAt, fmt)}
-        </div>
-        {updatedAt && updatedAt !== createdAt && (
-          <div title={formatTime(updatedAt, "YYYY/MM/DD HH:mm:ss")}>
-            {t("updatedAt")}：{formatTime(updatedAt, fmt)}
-          </div>
-        )}
-        {completedAt && (
-          <div title={formatTime(completedAt, "YYYY/MM/DD HH:mm:ss")}>
-            <b>{t("completedAt")}：{formatTime(completedAt, fmt)}</b>
-          </div>
-        )}
-      </Typography>
-      {onStamp && (
-        <button
-          type="button"
-          className={clsx(classes.stamp, stampClass)}
-          title={t("stampHint")}
-          aria-label={t("stampHint")}
-          onClick={handleStamp}
+      {description && (
+        <Typography
+          title={description}
+          className={clsx(classes.description, done && classes.descriptionDone)}
+          variant="body2"
         >
-          {stampLabel}
-        </button>
+          {description}
+        </Typography>
       )}
+      <div className={classes.footer}>
+        <Typography component="div" variant="caption" className={classes.times} title={timesTitle}>
+          {done && completedAt ? (
+            <div>
+              <b>{t("completedAt")}：{formatTime(completedAt, fmt)}</b>
+            </div>
+          ) : (
+            <>
+              <div>
+                {t("createdAt")}：{formatTime(createdAt, fmt)}
+              </div>
+              {updatedAt && updatedAt !== createdAt && (
+                <div>
+                  {t("updatedAt")}：{formatTime(updatedAt, fmt)}
+                </div>
+              )}
+            </>
+          )}
+        </Typography>
+        {onStamp && (
+          <button
+            type="button"
+            className={clsx(classes.stamp, stampClass)}
+            title={t("stampHint")}
+            aria-label={t("stampHint")}
+            onClick={handleStamp}
+          >
+            {stampLabel}
+          </button>
+        )}
+      </div>
     </Paper>
   );
 };

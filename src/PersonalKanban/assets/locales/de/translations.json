@@ -81,5 +81,7 @@
   "updateNow": "Jetzt aktualisieren",
   "backupNewerSchema": "Diese Sicherung stammt von einer neueren Version (neueres Datenformat). Bitte zuerst die App aktualisieren und dann erneut importieren.",
   "snapshotReason_beforeUpdate": "Vor Update",
-  "snapshotReason_beforeMigration": "Vor Datenaktualisierung"
+  "snapshotReason_beforeMigration": "Vor Datenaktualisierung",
+  "showAllDone": "{{n}} weitere erledigte anzeigen",
+  "collapseDone": "Erledigte einklappen"
 }

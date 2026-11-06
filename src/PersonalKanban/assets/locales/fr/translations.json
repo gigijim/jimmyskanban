@@ -81,5 +81,7 @@
   "updateNow": "Mettre à jour",
   "backupNewerSchema": "Cette sauvegarde provient d’une version plus récente (format de données plus récent). Mettez d’abord l’application à jour, puis réimportez.",
   "snapshotReason_beforeUpdate": "Avant mise à jour",
-  "snapshotReason_beforeMigration": "Avant mise à niveau des données"
+  "snapshotReason_beforeMigration": "Avant mise à niveau des données",
+  "showAllDone": "Afficher {{n}} terminées de plus",
+  "collapseDone": "Réduire les terminées"
 }

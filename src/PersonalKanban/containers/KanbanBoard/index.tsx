@@ -255,7 +255,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
         onReplaceBoard={handleReplaceBoard}
       />
       <div className={classes.toolbar} />
-      <Box padding={1}>
+      <Box padding={0.5}>
         <KanbanBoard
           columns={columns}
           onColumnMove={handleColumnMove}

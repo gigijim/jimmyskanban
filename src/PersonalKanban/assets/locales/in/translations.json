@@ -81,5 +81,7 @@
   "updateNow": "अभी अपडेट करें",
   "backupNewerSchema": "यह बैकअप नए संस्करण से बना है (नया डेटा फ़ॉर्मैट)। पहले ऐप अपडेट करें, फिर दोबारा आयात करें।",
   "snapshotReason_beforeUpdate": "अपडेट से पहले",
-  "snapshotReason_beforeMigration": "डेटा अपग्रेड से पहले"
+  "snapshotReason_beforeMigration": "डेटा अपग्रेड से पहले",
+  "showAllDone": "{{n}} और पूर्ण दिखाएँ",
+  "collapseDone": "पूर्ण छिपाएँ"
 }

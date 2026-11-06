@@ -81,5 +81,7 @@
   "updateNow": "立即更新",
   "backupNewerSchema": "這個備份檔來自較新的版本（資料格式較新），請先「檢查更新」更新程式後再匯入。",
   "snapshotReason_beforeUpdate": "更新前",
-  "snapshotReason_beforeMigration": "資料升級前"
+  "snapshotReason_beforeMigration": "資料升級前",
+  "showAllDone": "顯示其餘 {{n}} 張已完成",
+  "collapseDone": "收合已完成"
 }

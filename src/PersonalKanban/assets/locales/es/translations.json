@@ -81,5 +81,7 @@
   "updateNow": "Actualizar ahora",
   "backupNewerSchema": "Esta copia se hizo con una versión más nueva (formato de datos más nuevo). Actualiza primero la aplicación y vuelve a importar.",
   "snapshotReason_beforeUpdate": "Antes de actualizar",
-  "snapshotReason_beforeMigration": "Antes de actualizar datos"
+  "snapshotReason_beforeMigration": "Antes de actualizar datos",
+  "showAllDone": "Mostrar {{n}} completadas más",
+  "collapseDone": "Contraer completadas"
 }

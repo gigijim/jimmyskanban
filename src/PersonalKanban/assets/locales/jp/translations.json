@@ -81,5 +81,7 @@
   "updateNow": "今すぐ更新",
   "backupNewerSchema": "このバックアップは新しいバージョンで作成されています（データ形式が新しい）。先にアプリを更新してから再度インポートしてください。",
   "snapshotReason_beforeUpdate": "更新前",
-  "snapshotReason_beforeMigration": "データ移行前"
+  "snapshotReason_beforeMigration": "データ移行前",
+  "showAllDone": "完了をあと {{n}} 件表示",
+  "collapseDone": "完了を折りたたむ"
 }

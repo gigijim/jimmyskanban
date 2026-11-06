@@ -81,5 +81,7 @@
   "updateNow": "Update now",
   "backupNewerSchema": "This backup was made by a newer version (data format is newer). Please update the app first, then import again.",
   "snapshotReason_beforeUpdate": "Before update",
-  "snapshotReason_beforeMigration": "Before data upgrade"
+  "snapshotReason_beforeMigration": "Before data upgrade",
+  "showAllDone": "Show {{n}} more done",
+  "collapseDone": "Collapse done"
 }

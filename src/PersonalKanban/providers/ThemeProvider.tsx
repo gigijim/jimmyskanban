@@ -71,6 +71,8 @@ const ThemeProvider: React.FC<ThemeProviderProps> = (props) => {
       },
     },
     typography: {
+      // 原版 14px；稍微縮小讓同一畫面放得下更多欄位
+      fontSize: 13,
       fontFamily: "'Nunito', 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif",
       fontWeightLight: 300,
       fontWeightMedium: 400,
