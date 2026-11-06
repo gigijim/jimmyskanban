@@ -33,7 +33,7 @@
 
 - 右上角「檢查更新」按鈕：比對 GitHub 上的最新版本，**只有按下「立即更新」才會下載**，不會在背景自動換版本；更新前自動建立快照。離線時照常使用。
 - 單一 HTML 檔版無法自我更新，按鈕會提供最新檔案的下載連結。
-- 備份檔帶有資料格式版本（schemaVersion）；之後的版本都必須能匯入舊備份，規則見 [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md)，並由  在每次發佈前自動驗證。
+- 備份檔帶有資料格式版本（schemaVersion）；之後的版本都必須能匯入舊備份，規則見 [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md)，並由 `Schema.test.ts` 在每次發佈前自動驗證。
 
 ## 開發
 
