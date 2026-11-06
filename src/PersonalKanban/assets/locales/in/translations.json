@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "डेटा अपग्रेड से पहले",
   "showAllDone": "{{n}} और पूर्ण दिखाएँ",
   "collapseDone": "पूर्ण छिपाएँ",
-  "resizeColumn": "चौड़ाई बदलने के लिए खींचें (रीसेट के लिए डबल-क्लिक)"
+  "resizeColumn": "चौड़ाई बदलने के लिए खींचें (रीसेट के लिए डबल-क्लिक)",
+  "searchPlaceholder": "कार्ड खोजें (फ़ज़ी)",
+  "searchResult": "{{n}} मिले",
+  "clearSearch": "खोज साफ़ करें",
+  "noSearchResult": "कोई मेल खाता कार्ड नहीं"
 }

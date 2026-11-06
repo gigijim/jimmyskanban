@@ -365,3 +365,51 @@ export const getInitialState = () => {
     },
   ];
 };
+
+/* ------------------------------------------------------------------ */
+/* 搜尋（模糊比對）                                                     */
+/* ------------------------------------------------------------------ */
+
+/** 全形 / 半形、大小寫、連續空白都視為相同 */
+export const normalizeSearch = (s?: string | null) =>
+  (s || "").normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+
+/**
+ * token 的字元依序出現在 text 中，且分布範圍不太大
+ * （例：「中電」可找到「中華電信」，但不會在一大段文字裡東湊一個字西湊一個字）
+ */
+const fuzzyIncludes = (text: string, token: string) => {
+  if (token.length < 2) return false;
+  const maxSpan = Math.max(token.length * 3, token.length + 4);
+  for (let start = text.indexOf(token[0]); start >= 0; start = text.indexOf(token[0], start + 1)) {
+    let i = 1;
+    let pos = start;
+    while (i < token.length) {
+      pos = text.indexOf(token[i], pos + 1);
+      if (pos < 0 || pos - start + 1 > maxSpan) break;
+      i++;
+    }
+    if (i === token.length) return true;
+    if (pos < 0) return false;
+  }
+  return false;
+};
+
+/**
+ * 搜尋字串用空白分成多個關鍵字，每個關鍵字都要符合（完全包含或模糊比對）。
+ * @param extra 額外可被搜尋的文字（例如印章名稱「急件」「完成」）
+ */
+export const matchRecord = (record: Record, query: string, extra = "") => {
+  const tokens = normalizeSearch(query).split(" ").filter(Boolean);
+  if (!tokens.length) return true;
+  const text = normalizeSearch(`${record.title}\n${record.description || ""}\n${extra}`);
+  return tokens.every((tok) => text.includes(tok) || fuzzyIncludes(text, tok));
+};
+
+/** 篩選看板：每欄只留下符合的便條紙，沒有符合的欄位不顯示 */
+export const filterColumns = (columns: Column[], query: string, extraOf?: (r: Record) => string) => {
+  if (!normalizeSearch(query)) return columns;
+  return columns
+    .map((c) => ({ ...c, records: (c.records || []).filter((r) => matchRecord(r, query, extraOf ? extraOf(r) : "")) }))
+    .filter((c) => c.records.length > 0);
+};

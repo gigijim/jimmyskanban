@@ -12,6 +12,7 @@ import { Column as ColumnType } from "PersonalKanban/types";
 import { DONE_SUFFIX, formatTime, splitRecords } from "PersonalKanban/services/Utils";
 import { DONE_PREVIEW } from "PersonalKanban/constants";
 import { useActiveAreaHeight } from "PersonalKanban/components/KanbanColumn/ActiveAreaHeight";
+import { useSearchQuery } from "PersonalKanban/components/KanbanColumn/SearchContext";
 
 // 每個欄位「已完成」區是否展開全部：只是畫面偏好，存在瀏覽器，不進備份
 const EXPAND_KEY = "jimmyskanban.doneExpanded";
@@ -121,9 +122,11 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
       return !v;
     });
   }, [columnId]);
+  const searching = Boolean(useSearchQuery().trim());
+  const showAll = expanded || searching;
   const doneColumn = React.useMemo(
-    () => ({ ...column, records: expanded ? done : done.slice(0, DONE_PREVIEW) }),
-    [column, done, expanded]
+    () => ({ ...column, records: showAll ? done : done.slice(0, DONE_PREVIEW) }),
+    [column, done, showAll]
   );
 
   const isDropDisabled = Boolean(wipEnabled) && wipLimit <= active.length;
@@ -178,7 +181,7 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
               />
               {provided.placeholder}
             </div>
-            {done.length > DONE_PREVIEW && (
+            {!searching && done.length > DONE_PREVIEW && (
               <button type="button" className={classes.toggle} onClick={toggleExpanded}>
                 {expanded ? t("collapseDone") : t("showAllDone", { n: done.length - DONE_PREVIEW })}
               </button>

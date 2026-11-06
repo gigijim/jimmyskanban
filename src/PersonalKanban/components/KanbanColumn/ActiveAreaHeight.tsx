@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ACTIVE_SLOTS, ACTIVE_SLOT_HEIGHT } from "PersonalKanban/constants";
+import { useSearchQuery } from "PersonalKanban/components/KanbanColumn/SearchContext";
 
 /**
  * 讓並排的欄位某個區塊一樣高（取所有欄位裡最高的那一個）：
@@ -58,7 +59,10 @@ export const useSyncedHeight = (group: Group, columnId: string) => {
     };
   }, [group, columnId, report]);
 
-  const minHeight = Math.max(BASE[group], ...Object.values(heights[group] || {}));
+  // 搜尋時不保留空位，讓符合的已完成卡片不會被擠到畫面外
+  const searching = Boolean(useSearchQuery().trim());
+  const base = searching ? 0 : BASE[group];
+  const minHeight = Math.max(base, ...Object.values(heights[group] || {}));
   return { minHeight, contentRef: ref };
 };
 

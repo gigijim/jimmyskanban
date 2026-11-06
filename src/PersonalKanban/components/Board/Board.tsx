@@ -30,6 +30,7 @@ type BoardProps = {
   innerRef: any;
   ColumnComponent: any;
   placeholder?: any;
+  emptyText?: string;
   onColumnEdit?: any;
   onColumnDelete?: any;
   onAddRecord?: any;
@@ -45,6 +46,7 @@ const Board: React.FC<BoardProps> = (props) => {
     innerRef,
     ColumnComponent = Column,
     placeholder,
+    emptyText,
     onColumnEdit,
     onColumnDelete,
     onAddRecord,
@@ -79,7 +81,7 @@ const Board: React.FC<BoardProps> = (props) => {
         ))
       ) : (
         <Box display="flex" justifyContent="center">
-          <Typography>{t("noColumn")}</Typography>
+          <Typography>{emptyText || t("noColumn")}</Typography>
         </Box>
       )}
       {placeholder}

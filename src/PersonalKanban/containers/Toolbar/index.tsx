@@ -23,6 +23,7 @@ import { useTheme } from "PersonalKanban/providers/ThemeProvider";
 import BackupButton from "./BackupButton";
 import InstallButton from "./InstallButton";
 import UpdateButton from "./UpdateButton";
+import SearchBox from "./SearchBox";
 
 type AddColumnButtonProps = {
   onSubmit: any;
@@ -213,6 +214,9 @@ const useToolbarStyles = makeStyles(() => ({
 
 type ToolbarProps = {
   columns: Column[];
+  searchQuery?: string;
+  searchResultCount?: number;
+  onSearchChange?: (value: string) => void;
   onReplaceBoard: (columns: Column[]) => void;
   clearButtonDisabled?: boolean;
   onNewColumn: any;
@@ -220,7 +224,16 @@ type ToolbarProps = {
 };
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const { columns, onReplaceBoard, clearButtonDisabled, onNewColumn, onClearBoard } = props;
+  const {
+    columns,
+    onReplaceBoard,
+    clearButtonDisabled,
+    onNewColumn,
+    onClearBoard,
+    searchQuery = "",
+    searchResultCount = 0,
+    onSearchChange,
+  } = props;
 
   const { t } = useTranslation();
 
@@ -247,6 +260,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           <Typography variant={isMobile ? "body1" : "h6"}>
             <b>{t("personalKanban")}</b>
           </Typography>
+          {onSearchChange && (
+            <SearchBox value={searchQuery} resultCount={searchResultCount} onChange={onSearchChange} />
+          )}
         </Box>
         <Box display="flex" flexGrow={1} />
         <Box display="flex">

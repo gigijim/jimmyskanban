@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "資料升級前",
   "showAllDone": "顯示其餘 {{n}} 張已完成",
   "collapseDone": "收合已完成",
-  "resizeColumn": "拖曳調整欄寬（雙擊恢復自動）"
+  "resizeColumn": "拖曳調整欄寬（雙擊恢復自動）",
+  "searchPlaceholder": "搜尋卡片（支援模糊搜尋）",
+  "searchResult": "{{n}} 張",
+  "clearSearch": "清除搜尋",
+  "noSearchResult": "找不到符合的卡片"
 }

@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "Antes de actualizar datos",
   "showAllDone": "Mostrar {{n}} completadas más",
   "collapseDone": "Contraer completadas",
-  "resizeColumn": "Arrastra para cambiar el ancho (doble clic para restablecer)"
+  "resizeColumn": "Arrastra para cambiar el ancho (doble clic para restablecer)",
+  "searchPlaceholder": "Buscar tarjetas (aproximada)",
+  "searchResult": "{{n}} encontradas",
+  "clearSearch": "Borrar búsqueda",
+  "noSearchResult": "No hay tarjetas que coincidan"
 }

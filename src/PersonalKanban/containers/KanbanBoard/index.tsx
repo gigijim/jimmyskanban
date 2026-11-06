@@ -14,7 +14,10 @@ import {
   applyStamp,
   nextStamp,
   normalizeColumns,
+  filterColumns,
 } from "PersonalKanban/services/Utils";
+import { SearchContext } from "PersonalKanban/components/KanbanColumn/SearchContext";
+import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 import StorageService from "PersonalKanban/services/StorageService";
 import Toolbar from "PersonalKanban/containers/Toolbar";
 
@@ -37,6 +40,23 @@ const loadInitialState = (): Column[] => {
 
 const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
   const [columns, setColumns] = React.useState<Column[]>(loadInitialState);
+
+  // ---- 搜尋：只影響畫面，資料仍是完整的 columns
+  const { t } = useTranslation();
+  const [query, setQuery] = React.useState("");
+  const searching = Boolean(query.trim());
+  const stampText = React.useCallback(
+    (r: Record) => (r.stamp === "done" ? t("stampDone") : r.stamp === "important" ? t("stampImportant") : ""),
+    [t]
+  );
+  const visibleColumns = React.useMemo(
+    () => (searching ? filterColumns(columns, query, stampText) : columns),
+    [columns, query, searching, stampText]
+  );
+  const resultCount = React.useMemo(
+    () => (searching ? visibleColumns.reduce((n, c) => n + (c.records || []).length, 0) : 0),
+    [searching, visibleColumns]
+  );
 
   const classes = useKanbanBoardStyles();
 
@@ -90,10 +110,12 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
 
   const handleColumnMove = React.useCallback(
     ({ column, index }: { column: Column; index: number }) => {
+      // 搜尋時部分欄位被隱藏，位置對不上，不允許移動欄位
+      if (searching) return;
       const updatedColumns = reorder(columns, getColumnIndex(column.id), index);
       setColumns(updatedColumns);
     },
-    [columns, getColumnIndex]
+    [columns, getColumnIndex, searching]
   );
 
   const handleColumnEdit = React.useCallback(
@@ -263,11 +285,16 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
         onNewColumn={handleAddColumn}
         onClearBoard={handleClearBoard}
         onReplaceBoard={handleReplaceBoard}
+        searchQuery={query}
+        searchResultCount={resultCount}
+        onSearchChange={setQuery}
       />
       <div className={classes.toolbar} />
       <Box padding={0.5}>
+        <SearchContext.Provider value={query}>
         <KanbanBoard
-          columns={columns}
+          columns={visibleColumns}
+          emptyText={searching ? t("noSearchResult") : undefined}
           onColumnMove={handleColumnMove}
           onColumnEdit={handleColumnEdit}
           onColumnDelete={handleColumnDelete}
@@ -278,6 +305,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
           onRecordStamp={handleRecordStamp}
           onAllRecordDelete={handleAllRecordDelete}
         />
+        </SearchContext.Provider>
       </Box>
     </>
   );

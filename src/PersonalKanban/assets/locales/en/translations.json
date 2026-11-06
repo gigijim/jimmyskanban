@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "Before data upgrade",
   "showAllDone": "Show {{n}} more done",
   "collapseDone": "Collapse done",
-  "resizeColumn": "Drag to resize (double-click to reset)"
+  "resizeColumn": "Drag to resize (double-click to reset)",
+  "searchPlaceholder": "Search cards (fuzzy)",
+  "searchResult": "{{n}} found",
+  "clearSearch": "Clear search",
+  "noSearchResult": "No matching cards"
 }

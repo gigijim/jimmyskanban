@@ -5,6 +5,8 @@ import {
   formatTime,
   mergeColumns,
   moveRecord,
+  matchRecord,
+  filterColumns,
   nextStamp,
   normalizeColumns,
   parseTime,
@@ -191,5 +193,37 @@ describe("toCSV", () => {
     expect(csv.startsWith("﻿")).toBe(true);
     expect(csv).toContain('"a, ""b""\nc"');
     expect(csv.split("\r\n")).toHaveLength(3);
+  });
+});
+
+describe("search", () => {
+  const rec = (title: string, description = ""): Record => ({ id: title, title, description });
+  it("matches substrings ignoring case and full-width characters", () => {
+    expect(matchRecord(rec("Cisco SW 更新"), "cisco")).toBe(true);
+    expect(matchRecord(rec("ＰＢＸ 維修"), "pbx")).toBe(true);
+    expect(matchRecord(rec("A", "會議室投影機"), "投影機")).toBe(true);
+  });
+  it("fuzzy matches characters in order within a short span", () => {
+    expect(matchRecord(rec("中華電信報價"), "中電")).toBe(true);
+    expect(matchRecord(rec("中" + "x".repeat(30) + "電"), "中電")).toBe(false);
+    expect(matchRecord(rec("電信中華"), "中電")).toBe(false);
+  });
+  it("requires every space-separated keyword", () => {
+    expect(matchRecord(rec("PBX 報價", "2026"), "pbx 2026")).toBe(true);
+    expect(matchRecord(rec("PBX 報價"), "pbx 會議")).toBe(false);
+  });
+  it("searches extra text such as the stamp label", () => {
+    expect(matchRecord(rec("x"), "急件", "急件")).toBe(true);
+  });
+  it("filters per column and drops columns without matches; empty query keeps all", () => {
+    const cols: Column[] = [
+      { id: "A", title: "A", records: [rec("網路 SW"), rec("電話")] },
+      { id: "B", title: "B", records: [rec("投影機")] },
+    ];
+    expect(filterColumns(cols, "  ")).toBe(cols);
+    const out = filterColumns(cols, "sw");
+    expect(out.map((c) => c.id)).toEqual(["A"]);
+    expect(out[0].records!.map((r) => r.title)).toEqual(["網路 SW"]);
+    expect(cols[0].records!.length).toBe(2);
   });
 });

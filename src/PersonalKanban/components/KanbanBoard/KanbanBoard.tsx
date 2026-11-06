@@ -19,6 +19,7 @@ type KanbanBoardProps = {
   onRecordStamp?: any;
   onAllRecordDelete?: any;
   ColumnComponent?: any;
+  emptyText?: string;
 };
 
 /** droppableId → 欄位 id 與區塊（進行中 / 已完成） */
@@ -43,6 +44,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = (props) => {
     onRecordStamp,
     onAllRecordDelete,
     ColumnComponent = KanbanColumn,
+    emptyText,
   } = props;
 
   const getColumnById = React.useCallback(
@@ -113,6 +115,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = (props) => {
               {...provided.droppableProps}
               columns={columns}
               placeholder={provided.placeholder}
+              emptyText={emptyText}
               onColumnEdit={onColumnEdit}
               onColumnDelete={onColumnDelete}
               onAddRecord={onAddRecord}

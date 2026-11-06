@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "Vor Datenaktualisierung",
   "showAllDone": "{{n}} weitere erledigte anzeigen",
   "collapseDone": "Erledigte einklappen",
-  "resizeColumn": "Ziehen zum Ändern der Breite (Doppelklick: zurücksetzen)"
+  "resizeColumn": "Ziehen zum Ändern der Breite (Doppelklick: zurücksetzen)",
+  "searchPlaceholder": "Karten suchen (unscharf)",
+  "searchResult": "{{n}} gefunden",
+  "clearSearch": "Suche löschen",
+  "noSearchResult": "Keine passenden Karten"
 }

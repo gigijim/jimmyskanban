@@ -84,5 +84,9 @@
   "snapshotReason_beforeMigration": "数据升级前",
   "showAllDone": "显示其余 {{n}} 张已完成",
   "collapseDone": "收起已完成",
-  "resizeColumn": "拖动调整栏宽（双击恢复自动）"
+  "resizeColumn": "拖动调整栏宽（双击恢复自动）",
+  "searchPlaceholder": "搜索卡片（支持模糊搜索）",
+  "searchResult": "{{n}} 张",
+  "clearSearch": "清除搜索",
+  "noSearchResult": "找不到符合的卡片"
 }
