@@ -192,6 +192,11 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
         const t = getCreatedAt();
         if (contentChanged) updated.updatedAt = t;
         updated = applyStamp(updated, (record.stamp || "") as Stamp, t);
+        // 編輯視窗裡手動改過的時間（沒改的欄位會送回原值）
+        if (record.createdAt && record.createdAt !== old.createdAt) updated.createdAt = record.createdAt;
+        if (record.updatedAt && record.updatedAt !== old.updatedAt) updated.updatedAt = record.updatedAt;
+        if (updated.stamp === "done" && record.completedAt && record.completedAt !== old.completedAt)
+          updated.completedAt = record.completedAt;
         columns[columnIndex].records[recordIndex!] = updated;
         return columns;
       });
@@ -199,9 +204,9 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
     [getColumnIndex, getRecordIndex, cloneColumns]
   );
 
-  /** 點右下角印章：無 → 特重要 → 已完成! → 無 */
+  /** 右下角印章選單：空白 / 急件 / 完成 */
   const handleRecordStamp = React.useCallback(
-    ({ column, record }: { column: Column; record: Record }) => {
+    ({ column, record, stamp }: { column: Column; record: Record; stamp?: Stamp }) => {
       setColumns((_columns) => {
         const columns = cloneColumns(_columns);
         const col = columns.find((c) => c.id === column.id);
@@ -209,7 +214,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
         const i = col.records!.findIndex((r) => r.id === record.id);
         if (i < 0) return _columns;
         const current = col.records![i];
-        col.records![i] = applyStamp(current, nextStamp(current.stamp || ""));
+        col.records![i] = applyStamp(current, stamp !== undefined ? stamp : nextStamp(current.stamp || ""));
         return columns;
       });
     },

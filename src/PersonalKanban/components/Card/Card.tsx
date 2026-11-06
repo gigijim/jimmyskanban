@@ -3,9 +3,12 @@ import clsx from "clsx";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Record } from "PersonalKanban/types";
+import { Record, Stamp } from "PersonalKanban/types";
 import IconButton from "PersonalKanban/components/IconButton";
 import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 import { formatTime } from "PersonalKanban/services/Utils";
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   description: {
     display: "-webkit-box",
-    "-webkit-line-clamp": 3,
+    "-webkit-line-clamp": 6,
     "-webkit-box-orient": "vertical",
     overflow: "hidden",
     whiteSpace: "pre-line",
@@ -43,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 2,
   },
   descriptionDone: {
-    "-webkit-line-clamp": 1,
+    "-webkit-line-clamp": 2,
     opacity: 0.7,
   },
   footer: {
@@ -57,6 +60,20 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.75,
     fontSize: "0.68rem",
     minWidth: 0,
+    cursor: "help",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  tip: {
+    whiteSpace: "pre-line",
+    fontSize: "0.75rem",
+    lineHeight: 1.6,
+  },
+  menuItem: {
+    minHeight: 32,
+    fontWeight: 700,
+    fontSize: "0.85rem",
   },
   stamp: {
     flexShrink: 0,
@@ -76,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
     "&:focus-visible": { opacity: 1, outline: `2px solid ${theme.palette.primary.main}` },
   },
   stampEmpty: {
+    minWidth: 0,
     border: `2px dashed ${theme.palette.text.disabled}`,
     color: theme.palette.text.secondary,
     fontSize: 11,
@@ -136,10 +154,18 @@ const Card: React.FC<CardProps> = (props) => {
     onDelete,
   ]);
 
-  const handleStamp = React.useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      onStamp && onStamp(record);
+  // 點印章 → 在旁邊跳出小選單選擇狀態
+  const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);
+
+  const handleStampClick = React.useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setMenuAnchor(e.currentTarget);
+  }, []);
+
+  const handleStampSelect = React.useCallback(
+    (value: Stamp) => {
+      setMenuAnchor(null);
+      onStamp && onStamp(record, value);
     },
     [record, onStamp]
   );
@@ -149,12 +175,16 @@ const Card: React.FC<CardProps> = (props) => {
   // 滑鼠移到時間上：顯示完整的三個時間
   const full = "YYYY/MM/DD HH:mm:ss";
   const timesTitle = [
-    `${t("createdAt")}：${formatTime(createdAt, full)}`,
-    updatedAt ? `${t("updatedAt")}：${formatTime(updatedAt, full)}` : "",
-    completedAt ? `${t("completedAt")}：${formatTime(completedAt, full)}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+    `${t("createdAt")}：${formatTime(createdAt, full) || "—"}`,
+    `${t("updatedAt")}：${formatTime(updatedAt, full) || "—"}`,
+    `${t("completedAt")}：${formatTime(completedAt, full) || "—"}`,
+  ].join("\n");
+
+  const stampOptions: { value: Stamp; label: string; color?: string }[] = [
+    { value: "", label: t("stampNone") },
+    { value: "important", label: t("stampImportant"), color: "#d32f2f" },
+    { value: "done", label: t("stampDone"), color: "#2e7d32" },
+  ];
 
   const stampLabel =
     stamp === "done" ? t("stampDone") : stamp === "important" ? t("stampImportant") : t("stamp");
@@ -190,34 +220,51 @@ const Card: React.FC<CardProps> = (props) => {
         </Typography>
       )}
       <div className={classes.footer}>
-        <Typography component="div" variant="caption" className={classes.times} title={timesTitle}>
-          {done && completedAt ? (
-            <div>
-              <b>{t("completedAt")}：{formatTime(completedAt, fmt)}</b>
-            </div>
-          ) : (
-            <>
-              <div>
-                {t("createdAt")}：{formatTime(createdAt, fmt)}
-              </div>
-              {updatedAt && updatedAt !== createdAt && (
-                <div>
-                  {t("updatedAt")}：{formatTime(updatedAt, fmt)}
-                </div>
-              )}
-            </>
-          )}
-        </Typography>
+        {/* 只顯示建立時間；滑鼠移過去顯示建立 / 修改 / 完成時間 */}
+        <Tooltip
+          title={<span className={classes.tip}>{timesTitle}</span>}
+          placement="bottom-start"
+          enterDelay={300}
+        >
+          <Typography component="div" variant="caption" className={classes.times}>
+            {t("createdAt")}：{formatTime(createdAt, fmt)}
+          </Typography>
+        </Tooltip>
         {onStamp && (
-          <button
-            type="button"
-            className={clsx(classes.stamp, stampClass)}
-            title={t("stampHint")}
-            aria-label={t("stampHint")}
-            onClick={handleStamp}
-          >
-            {stampLabel}
-          </button>
+          <>
+            <button
+              type="button"
+              className={clsx(classes.stamp, stampClass)}
+              title={t("stampHint")}
+              aria-label={t("stampHint")}
+              aria-haspopup="menu"
+              onClick={handleStampClick}
+            >
+              {stampLabel}
+            </button>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+              onClick={(e) => e.stopPropagation()}
+              getContentAnchorEl={null}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+              MenuListProps={{ dense: true }}
+            >
+              {stampOptions.map((o) => (
+                <MenuItem
+                  key={o.value || "none"}
+                  selected={stamp === o.value}
+                  className={classes.menuItem}
+                  style={o.color ? { color: o.color } : undefined}
+                  onClick={() => handleStampSelect(o.value)}
+                >
+                  {o.label}
+                </MenuItem>
+              ))}
+            </Menu>
+          </>
         )}
       </div>
     </Paper>

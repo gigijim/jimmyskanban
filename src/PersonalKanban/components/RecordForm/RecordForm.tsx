@@ -9,7 +9,12 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControl from "@material-ui/core/FormControl";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { formatTime } from "PersonalKanban/services/Utils";
+import { formatTime, parseTime } from "PersonalKanban/services/Utils";
+
+// <input type="datetime-local"> 使用的本地時間格式
+const LOCAL = "YYYY-MM-DDTHH:mm";
+const TIME_FIELDS = ["createdAt", "updatedAt", "completedAt"] as const;
+type TimeField = typeof TIME_FIELDS[number];
 
 import { Record } from "PersonalKanban/types";
 import { RecordColor } from "PersonalKanban/enums";
@@ -35,6 +40,13 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
     onCancel,
   } = props;
 
+  // 三個時間的初始值（換成本地時間字串，給時間輸入框用）
+  const initialTimes = React.useMemo(() => {
+    const out: { [k in TimeField]: string } = { createdAt: "", updatedAt: "", completedAt: "" };
+    TIME_FIELDS.forEach((k) => (out[k] = formatTime(record && (record as any)[k], LOCAL)));
+    return out;
+  }, [record]);
+
   const { values, errors, handleChange, handleSubmit } = useFormik({
     initialValues: Object.assign(
       {
@@ -43,10 +55,19 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
         color: "",
         stamp: "",
       },
-      record
+      record,
+      { times: initialTimes }
     ),
-    onSubmit: (values) => {
-      onSubmit && onSubmit(values);
+    onSubmit: (values: any) => {
+      const { times, ...rest } = values;
+      // 只有手動改過的時間才送出新值，其他保留原本（含秒數）
+      TIME_FIELDS.forEach((k) => {
+        if (times[k] !== initialTimes[k]) {
+          const m = parseTime(times[k]);
+          if (m) rest[k] = m.toISOString();
+        }
+      });
+      onSubmit && onSubmit(rest);
     },
     validate: (values) => {
       const errors: any = {};
@@ -81,7 +102,8 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
         <Grid item xs={12}>
           <TextField
             multiline
-            rows={3}
+            minRows={12}
+            maxRows={24}
             name="description"
             label={t("description")}
             value={values.description}
@@ -138,17 +160,22 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
             </RadioGroup>
           </FormControl>
         </Grid>
-        {record && (
-          <Grid item xs={12}>
-            <Typography variant="caption" component="div" color="textSecondary">
-              {t("createdAt")}：{formatTime(record.createdAt, "YYYY/MM/DD HH:mm:ss") || "—"}
-              <br />
-              {t("updatedAt")}：{formatTime(record.updatedAt, "YYYY/MM/DD HH:mm:ss") || "—"}
-              <br />
-              {t("completedAt")}：{formatTime(record.completedAt, "YYYY/MM/DD HH:mm:ss") || "—"}
-            </Typography>
-          </Grid>
-        )}
+        {record &&
+          TIME_FIELDS.map((k) => (
+            <Grid item xs={12} sm={4} key={k}>
+              {/* 點一下即可修改時間；「完成時間」只有蓋上完成印章時可改 */}
+              <TextField
+                type="datetime-local"
+                name={`times.${k}`}
+                label={t(k)}
+                value={values.times[k]}
+                disabled={disabled || (k === "completedAt" && values.stamp !== "done")}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ step: 60 }}
+              />
+            </Grid>
+          ))}
         <Grid item xs={12}>
           <Button variant="outlined" disabled={disabled} onClick={onCancel}>
             {t("cancel")}

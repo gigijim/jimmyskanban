@@ -3,6 +3,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import Board from "PersonalKanban/components/Board";
 import KanbanColumn from "PersonalKanban/components/KanbanColumn";
+import { ActiveAreaHeightProvider } from "PersonalKanban/components/KanbanColumn/ActiveAreaHeight";
 import { Column } from "PersonalKanban/types";
 import { DONE_SUFFIX, splitRecords } from "PersonalKanban/services/Utils";
 
@@ -101,6 +102,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = (props) => {
   );
 
   return (
+    <ActiveAreaHeightProvider>
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="BOARD" type="COLUMN" direction="horizontal">
         {(provided) => (
@@ -123,6 +125,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = (props) => {
         )}
       </Droppable>
     </DragDropContext>
+    </ActiveAreaHeightProvider>
   );
 };
 

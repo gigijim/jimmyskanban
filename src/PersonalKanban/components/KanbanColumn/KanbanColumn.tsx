@@ -11,6 +11,7 @@ import Column, { ColumnCardList } from "PersonalKanban/components/Column";
 import { Column as ColumnType } from "PersonalKanban/types";
 import { DONE_SUFFIX, formatTime, splitRecords } from "PersonalKanban/services/Utils";
 import { DONE_PREVIEW } from "PersonalKanban/constants";
+import { useActiveAreaHeight } from "PersonalKanban/components/KanbanColumn/ActiveAreaHeight";
 
 // 每個欄位「已完成」區是否展開全部：只是畫面偏好，存在瀏覽器，不進備份
 const EXPAND_KEY = "jimmyskanban.doneExpanded";
@@ -127,6 +128,8 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
 
   const isDropDisabled = Boolean(wipEnabled) && wipLimit <= active.length;
 
+  const { minHeight, contentRef } = useActiveAreaHeight(columnId);
+
   return (
     <>
       <Typography variant="caption" component="div" className={classes.label}>
@@ -139,13 +142,16 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`${classes.dropArea} ${snapshot.isDraggingOver ? classes.dropping : ""}`}
+            style={{ minHeight }}
           >
-            <KanbanInnerColumnCardList
-              column={activeColumn}
-              onRecordEdit={onRecordEdit}
-              onRecordDelete={onRecordDelete}
-              onRecordStamp={onRecordStamp}
-            />
+            <div ref={contentRef}>
+              <KanbanInnerColumnCardList
+                column={activeColumn}
+                onRecordEdit={onRecordEdit}
+                onRecordDelete={onRecordDelete}
+                onRecordStamp={onRecordStamp}
+              />
+            </div>
             {provided.placeholder}
           </div>
         )}

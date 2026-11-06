@@ -6,8 +6,6 @@ import { Record } from "PersonalKanban/types";
 import {
   RecordColor,
   DarkRecordColor,
-  DoneAccentColor,
-  DarkDoneAccentColor,
   DONE_OVERLAY,
   DARK_DONE_OVERLAY,
 } from "PersonalKanban/enums";
@@ -33,16 +31,8 @@ const KanbanCard: React.FC<KanbanCardProps> = (props) => {
 
   const background = darkTheme ? DarkRecordColor[recordColor] : RecordColor[recordColor];
 
-  // 已完成：原本底色 + 灰色濾層，左側留一條原本顏色的色帶
-  const doneStyle = done
-    ? {
-        backgroundImage: darkTheme ? DARK_DONE_OVERLAY : DONE_OVERLAY,
-        borderLeft: `6px solid ${
-          (darkTheme ? DarkDoneAccentColor : DoneAccentColor)[recordColor] ||
-          (darkTheme ? DarkDoneAccentColor : DoneAccentColor).Default
-        }`,
-      }
-    : null;
+  // 已完成：原本底色 + 深灰色濾層
+  const doneStyle = done ? { backgroundImage: darkTheme ? DARK_DONE_OVERLAY : DONE_OVERLAY } : null;
 
   return (
     <Draggable draggableId={record.id} index={index}>

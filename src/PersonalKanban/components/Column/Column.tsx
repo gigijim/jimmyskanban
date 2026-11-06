@@ -54,7 +54,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = (props) => {
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        marginBottom={Boolean(description) ? 0.5 : 0}
+        marginBottom={0.5}
       >
         <Typography variant="subtitle1" title={title} noWrap style={{ lineHeight: 1.4 }}>
           <b>{title}</b>
@@ -66,7 +66,8 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = (props) => {
           )}
         </Box>
       </Box>
-      <Typography title={description} noWrap gutterBottom>
+      {/* 固定一行高度：有沒有說明的欄位，下方區塊都對齊 */}
+      <Typography title={description} noWrap gutterBottom style={{ minHeight: "1.5em" }}>
         {description}
       </Typography>
 
@@ -330,8 +331,8 @@ const Column: React.FC<ColumnProps> = (props) => {
   );
 
   const handleRecordStamp = React.useCallback(
-    (record: Record) => {
-      onRecordStamp && onRecordStamp({ column, record });
+    (record: Record, stamp: string) => {
+      onRecordStamp && onRecordStamp({ column, record, stamp });
     },
     [column, onRecordStamp]
   );
@@ -507,7 +508,7 @@ const Column: React.FC<ColumnProps> = (props) => {
         onRecordStamp={onRecordStamp ? handleRecordStamp : undefined}
       />
       <ColumnFooterComponent content={caption} />
-      <Dialog open={dialog.open} onClose={handleCloseDialog}>
+      <Dialog open={dialog.open} onClose={handleCloseDialog} fullWidth maxWidth="sm">
         <DialogTitle>{dialog.title}</DialogTitle>
         <DialogContent>{dialog.content}</DialogContent>
         <DialogActions>{dialog.actions}</DialogActions>
