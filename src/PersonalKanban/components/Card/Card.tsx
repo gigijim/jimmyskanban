@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 2,
   },
   done: {
-    textDecoration: "line-through",
     opacity: 0.75,
   },
   description: {
