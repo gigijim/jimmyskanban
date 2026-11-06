@@ -15,9 +15,9 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
 import InfoIcon from "@material-ui/icons/Info";
 import ListIcon from "@material-ui/icons/List";
-import BackupIcon from "@material-ui/icons/Backup";
+import BackupIcon from "@material-ui/icons/ImportExport"; // 備份 / 匯入 / 匯出：上下雙箭頭
 import GetAppIcon from "@material-ui/icons/GetApp";
-import SystemUpdateIcon from "@material-ui/icons/SystemUpdateAlt";
+import SystemUpdateIcon from "@material-ui/icons/Autorenew"; // 檢查更新：循環箭頭
 
 const icons = {
   edit: EditIcon,
