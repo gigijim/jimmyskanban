@@ -152,6 +152,12 @@ const ThemeProvider: React.FC<ThemeProviderProps> = (props) => {
       fontWeightBold: 700,
     },
     props: {
+      // 關閉視窗 / 選單後不要把焦點還給開啟前的元素：
+      // 那個元素常是「已完成」區的卡片（卡片可被拖曳、會取得焦點），
+      // 瀏覽器為了讓它可見會自動捲動，畫面就跳到已完成區
+      MuiDialog: { disableRestoreFocus: true },
+      MuiMenu: { disableRestoreFocus: true },
+      MuiPopover: { disableRestoreFocus: true },
       MuiDivider: {
         light: darkTheme ? false : true,
       },
