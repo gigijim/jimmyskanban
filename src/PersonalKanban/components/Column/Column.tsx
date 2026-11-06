@@ -98,11 +98,18 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = (props) => {
       <div style={{ minHeight }}>
         <div ref={contentRef}>
           <Box display="flex" alignItems="flex-start" justifyContent="space-between" marginBottom={0.5}>
-            <Typography variant="subtitle1" title={title} className={classes.title}>
+            {/* 雙擊標題 → 編輯欄位（原本的鉛筆按鈕已移除） */}
+            <Typography
+              variant="subtitle1"
+              title={showEditAction ? `${title}
+（${t("editColumnHint")}）` : title}
+              className={classes.title}
+              style={showEditAction ? { cursor: "pointer", userSelect: "none" } : undefined}
+              onDoubleClick={showEditAction ? onEdit : undefined}
+            >
               <b>{title}</b>
             </Typography>
             <Box display="flex" alignItems="center" flexShrink={0}>
-              {showEditAction && <IconButton icon="edit" title={t("editColumn")} onClick={onEdit} />}
               {showAddRecordAction && (
                 <IconButton
                   icon="addCircle"

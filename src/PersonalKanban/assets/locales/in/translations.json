@@ -123,5 +123,6 @@
   "activityWeekdays": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
   "activityMonths": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
   "switchToDark": "Switch to dark mode",
-  "switchToLight": "Switch to light mode"
+  "switchToLight": "Switch to light mode",
+  "editColumnHint": "संपादित करने के लिए शीर्षक पर डबल-क्लिक करें"
 }
