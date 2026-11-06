@@ -89,7 +89,10 @@ export const activeCount = (column: Column) =>
 
 /**
  * 移動便條紙（支援進行中 / 已完成兩個區塊）。
- * @param toDone       目的地是否為完成區（拖進 = 標記已完成；拖出 = 取消完成）
+ * - 同一欄內：在進行中 / 完成區之間拖曳 = 蓋上 / 取消「完成」印章
+ * - 跨欄移動：印章與所有時間（建立 / 修改 / 完成）都不變，
+ *   卡片依原本的狀態放進目的欄對應的區塊（完成的進完成區，其他進進行中區）
+ * @param toDone       目的地是否為完成區
  * @param destinationIndex 目的地區塊內的位置（完成區依時間排序，位置忽略）
  */
 export const moveRecord = ({
@@ -121,15 +124,23 @@ export const moveRecord = ({
   const t = getCreatedAt(now);
   const columnChanged = sourceColumnId !== destinationColumnId;
 
-  if (toDone) {
-    if (!isDone(record)) record = applyStamp(record, "done", t);
-    else if (columnChanged) record = { ...record, updatedAt: t };
+  // 跨欄：維持原狀態；同欄：依放下的區塊改變印章
+  const intoDone = columnChanged ? isDone(record) : toDone;
+  if (!columnChanged) {
+    if (toDone && !isDone(record)) record = applyStamp(record, "done", t);
+    if (!toDone && isDone(record)) record = applyStamp(record, "", t);
+  }
+
+  if (intoDone) {
     destination.records.push(record);
     return newColumns;
   }
 
-  if (isDone(record)) record = applyStamp(record, "", t);
-  else if (columnChanged) record = { ...record, updatedAt: t };
+  // 未完成的卡片放到別欄的完成區時，排在進行中區最後；目的欄 WIP 已滿則不移動
+  if (columnChanged && toDone) {
+    if (destination.wipEnabled && (destination.wipLimit || 0) <= activeCount(destination)) return columns;
+    destinationIndex = Number.MAX_SAFE_INTEGER;
+  }
 
   const records = destination.records;
   const active = records.filter((r) => !isDone(r));

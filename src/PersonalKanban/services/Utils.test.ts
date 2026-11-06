@@ -71,11 +71,28 @@ describe("stamps", () => {
 });
 
 describe("moveRecord", () => {
-  it("dropping into another column's done area marks it done", () => {
+  it("dropping into the same column's done area marks it done", () => {
+    const out = moveRecord({ columns: board(), recordId: "a1", sourceColumnId: "A", destinationColumnId: "A", destinationIndex: 0, toDone: true, now: T3 });
+    expect(find(out, "a1")).toMatchObject({ stamp: "done", completedAt: T3, updatedAt: T3 });
+    expect(area(out, "A").done).toEqual(["a1", "ad2", "ad1"]);
+  });
+  it("cross-column move into the done area keeps an active card active and untouched", () => {
+    const before = find(board(), "b1");
     const out = moveRecord({ columns: board(), recordId: "b1", sourceColumnId: "B", destinationColumnId: "A", destinationIndex: 0, toDone: true, now: T3 });
-    expect(find(out, "b1")).toMatchObject({ stamp: "done", completedAt: T3, updatedAt: T3 });
-    expect(area(out, "A").done).toEqual(["b1", "ad2", "ad1"]);
+    expect(find(out, "b1")).toEqual(before);
+    expect(area(out, "A")).toEqual({ active: ["a1", "a2", "b1"], done: ["ad2", "ad1"] });
     expect(area(out, "B").active).toEqual(["b2"]);
+  });
+  it("cross-column drop of an active card into a full-WIP column's done area is refused", () => {
+    const cols = board().map((c) => (c.id === "A" ? { ...c, wipEnabled: true, wipLimit: 2 } : c));
+    expect(moveRecord({ columns: cols, recordId: "b1", sourceColumnId: "B", destinationColumnId: "A", destinationIndex: 0, toDone: true, now: T3 })).toBe(cols);
+  });
+  it("cross-column move into the active area keeps a done card done and untouched", () => {
+    const before = find(board(), "ad1");
+    const out = moveRecord({ columns: board(), recordId: "ad1", sourceColumnId: "A", destinationColumnId: "B", destinationIndex: 0, toDone: false, now: T3 });
+    expect(find(out, "ad1")).toEqual(before);
+    expect(area(out, "B").done).toContain("ad1");
+    expect(area(out, "B").active).toEqual(["b1", "b2"]);
   });
   it("dragging out of done into active at index 1 clears the stamp and inserts between", () => {
     const out = moveRecord({ columns: board(), recordId: "ad1", sourceColumnId: "A", destinationColumnId: "A", destinationIndex: 1, toDone: false, now: T3 });
@@ -87,10 +104,11 @@ describe("moveRecord", () => {
     expect(area(out, "A").active).toEqual(["a2", "a1"]);
     expect(find(out, "a1").updatedAt).toBe(T0);
   });
-  it("cross-column move into active changes updatedAt", () => {
+  it("cross-column move into active keeps every timestamp", () => {
+    const before = find(board(), "a1");
     const out = moveRecord({ columns: board(), recordId: "a1", sourceColumnId: "A", destinationColumnId: "B", destinationIndex: 0, toDone: false, now: T3 });
     expect(area(out, "B").active).toEqual(["a1", "b1", "b2"]);
-    expect(find(out, "a1").updatedAt).toBe(T3);
+    expect(find(out, "a1")).toEqual(before);
   });
   it("appends after the last active card when index is past the end", () => {
     const out = moveRecord({ columns: board(), recordId: "b1", sourceColumnId: "B", destinationColumnId: "A", destinationIndex: 99, toDone: false, now: T3 });
