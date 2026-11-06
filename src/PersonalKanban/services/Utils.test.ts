@@ -85,10 +85,6 @@ describe("moveRecord", () => {
     expect(area(out, "A")).toEqual({ active: ["a1", "a2", "b1"], done: ["ad2", "ad1"] });
     expect(area(out, "B").active).toEqual(["b2"]);
   });
-  it("cross-column drop of an active card into a full-WIP column's done area is refused", () => {
-    const cols = board().map((c) => (c.id === "A" ? { ...c, wipEnabled: true, wipLimit: 2 } : c));
-    expect(moveRecord({ columns: cols, recordId: "b1", sourceColumnId: "B", destinationColumnId: "A", destinationIndex: 0, toDone: true, now: T3 })).toBe(cols);
-  });
   it("cross-column move into the active area keeps a done card done and untouched", () => {
     const before = find(board(), "ad1");
     const out = moveRecord({ columns: board(), recordId: "ad1", sourceColumnId: "A", destinationColumnId: "B", destinationIndex: 0, toDone: false, now: T3 });

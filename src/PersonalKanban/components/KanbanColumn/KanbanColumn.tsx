@@ -103,12 +103,12 @@ type KanbanColumnCardListProps = {
 
 /**
  * 欄位內分成上下兩個區塊：
- *   上：進行中（可手動排序，受 WIP 上限限制）
+ *   上：進行中（可手動排序）
  *   下：已完成（依完成時間新→舊自動排序；拖進來 = 標記已完成）
  */
 const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
   const { column, onRecordEdit, onRecordDelete, onRecordStamp } = props;
-  const { id: columnId, records = [], wipEnabled, wipLimit = 0 } = column;
+  const { id: columnId, records = [] } = column;
   const { t } = useTranslation();
   const classes = useSectionStyles();
 
@@ -129,7 +129,6 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
     [column, done, showAll]
   );
 
-  const isDropDisabled = Boolean(wipEnabled) && wipLimit <= active.length;
 
   const { minHeight, contentRef } = useActiveAreaHeight(columnId);
 
@@ -137,9 +136,9 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
     <>
       <Typography variant="caption" component="div" className={classes.label}>
         <b>▶ {t("inProgress")}</b>
-        <span>{wipEnabled ? `${active.length} / ${wipLimit}` : active.length}</span>
+        <span>{active.length}</span>
       </Typography>
-      <Droppable droppableId={columnId} isDropDisabled={isDropDisabled}>
+      <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -223,9 +222,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = (props) => {
   const { t } = useTranslation();
 
   const _column = Object.assign({}, column, {
-    caption: column.wipEnabled
-      ? `${t("wipLimit")} :${column.wipLimit}`
-      : `${t("createdAt")}：${formatTime(column.createdAt, t("dateTimeFormat")) || column.createdAt || ""}`,
+    caption: `${t("createdAt")}：${formatTime(column.createdAt, t("dateTimeFormat")) || column.createdAt || ""}`,
   });
 
   return (

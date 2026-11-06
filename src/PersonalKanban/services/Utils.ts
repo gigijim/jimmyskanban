@@ -83,7 +83,7 @@ export const applyStamp = (record: Record, stamp: Stamp, now?: string): Record =
 export const nextStamp = (stamp: Stamp = ""): Stamp =>
   STAMPS[(STAMPS.indexOf(stamp) + 1) % STAMPS.length];
 
-/** 進行中區塊的數量（WIP 上限只計算進行中） */
+/** 進行中區塊的數量 */
 export const activeCount = (column: Column) =>
   (column.records || []).filter((r) => !isDone(r)).length;
 
@@ -136,11 +136,8 @@ export const moveRecord = ({
     return newColumns;
   }
 
-  // 未完成的卡片放到別欄的完成區時，排在進行中區最後；目的欄 WIP 已滿則不移動
-  if (columnChanged && toDone) {
-    if (destination.wipEnabled && (destination.wipLimit || 0) <= activeCount(destination)) return columns;
-    destinationIndex = Number.MAX_SAFE_INTEGER;
-  }
+  // 未完成的卡片放到別欄的完成區時，排在進行中區最後
+  if (columnChanged && toDone) destinationIndex = Number.MAX_SAFE_INTEGER;
 
   const records = destination.records;
   const active = records.filter((r) => !isDone(r));

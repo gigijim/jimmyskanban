@@ -19,6 +19,7 @@ type TimeField = typeof TIME_FIELDS[number];
 import { Record } from "PersonalKanban/types";
 import { RecordColor } from "PersonalKanban/enums";
 import Radio from "PersonalKanban/components/Radio";
+import ColorSwatches from "PersonalKanban/components/ColorSwatches";
 import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 
 type RecordFormProps = {
@@ -47,7 +48,7 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
     return out;
   }, [record]);
 
-  const { values, errors, handleChange, handleSubmit } = useFormik({
+  const { values, errors, handleChange, handleSubmit, setFieldValue } = useFormik({
     initialValues: Object.assign(
       {
         title: "",
@@ -116,24 +117,12 @@ const RecordForm: React.FC<RecordFormProps> = (props) => {
         <Grid item xs={12}>
           <FormControl component="fieldset">
             <FormLabel component="legend">{t("background")}</FormLabel>
-            <RadioGroup
-              row
-              aria-label="background"
-              name="color"
+            <ColorSwatches
+              palette={RecordColor}
               value={values.color}
-              onChange={handleChange}
-            >
-              {Object.keys(RecordColor).map((key) => {
-                const colorKey = key as keyof typeof RecordColor;
-                return (
-                  <Radio
-                    key={colorKey}
-                    value={colorKey}
-                    color={RecordColor[colorKey]}
-                  />
-                );
-              })}
-            </RadioGroup>
+              disabled={disabled}
+              onChange={(key) => setFieldValue("color", key)}
+            />
           </FormControl>
         </Grid>
         <Grid item xs={12}>

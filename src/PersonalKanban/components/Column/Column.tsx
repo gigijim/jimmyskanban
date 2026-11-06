@@ -19,7 +19,6 @@ import { ColumnColor, DarkColumnColor } from "PersonalKanban/enums";
 import { Record, Column as ColumnType } from "PersonalKanban/types";
 import { useTheme } from "PersonalKanban/providers/ThemeProvider";
 import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
-import { activeCount } from "PersonalKanban/services/Utils";
 import { useSyncedHeight } from "PersonalKanban/components/KanbanColumn/ActiveAreaHeight";
 
 const MIN_COLUMN_WIDTH = 150;
@@ -352,13 +351,10 @@ const Column: React.FC<ColumnProps> = (props) => {
     caption,
     color,
     records = [],
-    wipEnabled,
-    wipLimit = Infinity,
     width,
   } = column;
 
-  // WIP 上限只計算「進行中」區塊
-  const disableAddRecordAction = wipEnabled && wipLimit <= activeCount(column);
+  const disableAddRecordAction = false;
 
   const disableAllRecordDeleteAction = !records.length;
 
