@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>JimmysKanban</title>
+  <meta name="description" content="離線個人看板：資料只存在你的電腦">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="icons/icon-192.png" alt="">
+      <h1 id="boardTitle" class="board-title" title="點擊修改看板名稱" tabindex="0">JimmysKanban</h1>
+    </div>
+    <div class="toolbar">
+      <input id="search" class="search" type="search" placeholder="搜尋便條紙…" aria-label="搜尋便條紙">
+      <button id="btnAddColumn" class="btn primary" type="button">＋ 新增欄位</button>
+      <div class="menu-wrap">
+        <button id="btnBackup" class="btn" type="button" aria-haspopup="true" aria-expanded="false">💾 備份 / 匯出入 ▾</button>
+        <div id="backupMenu" class="menu" role="menu" hidden>
+          <button type="button" role="menuitem" data-act="export-json">⬇️ 備份（匯出 JSON）</button>
+          <button type="button" role="menuitem" data-act="export-csv">📊 匯出 CSV（Excel）</button>
+          <button type="button" role="menuitem" data-act="export-md">📝 匯出 Markdown</button>
+          <hr>
+          <button type="button" role="menuitem" data-act="import-replace">⬆️ 匯入（取代目前看板）</button>
+          <button type="button" role="menuitem" data-act="import-merge">🔀 匯入（合併）</button>
+          <hr>
+          <button type="button" role="menuitem" data-act="snapshots">🕘 自動快照 / 還原</button>
+          <button type="button" role="menuitem" data-act="clear">🗑️ 清空看板</button>
+        </div>
+      </div>
+      <button id="btnInstall" class="btn" type="button" hidden>📥 安裝到電腦</button>
+      <button id="btnSettings" class="btn icon" type="button" title="設定" aria-label="設定">⚙️</button>
+    </div>
+  </header>
+
+  <div id="backupReminder" class="banner" hidden>
+    <span id="backupReminderText"></span>
+    <button type="button" class="btn small primary" data-act="export-json">立即備份</button>
+    <button type="button" class="btn small" id="btnDismissReminder">稍後</button>
+  </div>
+
+  <main id="board" class="board" aria-label="看板"></main>
+
+  <footer class="statusbar">
+    <span id="statusText">載入中…</span>
+    <span class="spacer"></span>
+    <span id="lastBackupText"></span>
+  </footer>
+
+  <!-- 便條紙編輯 -->
+  <dialog id="cardDialog" class="dialog">
+    <form method="dialog" id="cardForm">
+      <h2 id="cardDialogTitle">編輯便條紙</h2>
+      <label>標題<input name="title" required maxlength="300" autocomplete="off"></label>
+      <label>內容<textarea name="description" rows="6"></textarea></label>
+      <fieldset class="stamp-choice">
+        <legend>印章</legend>
+        <label><input type="radio" name="stamp" value=""> 無</label>
+        <label><input type="radio" name="stamp" value="important"> <span class="stamp-chip important">特重要</span></label>
+        <label><input type="radio" name="stamp" value="done"> <span class="stamp-chip done">已完成!</span></label>
+      </fieldset>
+      <fieldset class="color-choice">
+        <legend>便條紙顏色</legend>
+        <div id="cardColors" class="swatches"></div>
+      </fieldset>
+      <dl id="cardTimes" class="times"></dl>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="btnDeleteCard">刪除</button>
+        <span class="spacer"></span>
+        <button value="cancel" class="btn" formnovalidate>取消</button>
+        <button value="ok" class="btn primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 欄位編輯 -->
+  <dialog id="columnDialog" class="dialog">
+    <form method="dialog" id="columnForm">
+      <h2 id="columnDialogTitle">欄位</h2>
+      <label>欄位名稱<input name="title" required maxlength="100" autocomplete="off"></label>
+      <label>說明<input name="description" maxlength="300" autocomplete="off"></label>
+      <label>進行中上限（WIP，0 = 不限）<input name="wipLimit" type="number" min="0" max="999" value="0"></label>
+      <fieldset class="color-choice">
+        <legend>欄位顏色</legend>
+        <div id="columnColors" class="swatches"></div>
+      </fieldset>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="btnDeleteColumn">刪除欄位</button>
+        <span class="spacer"></span>
+        <button value="cancel" class="btn" formnovalidate>取消</button>
+        <button value="ok" class="btn primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 快照 -->
+  <dialog id="snapDialog" class="dialog wide">
+    <form method="dialog">
+      <h2>自動快照 / 還原</h2>
+      <p class="hint">系統每 30 分鐘、以及匯入或清空前，會自動在本機保存一份快照（最多 20 份）。這是救援用，<b>不能取代</b>匯出備份檔。</p>
+      <div id="snapList" class="snap-list"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="btnSnapNow">立即建立快照</button>
+        <span class="spacer"></span>
+        <button value="cancel" class="btn">關閉</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 設定 -->
+  <dialog id="settingsDialog" class="dialog">
+    <form method="dialog" id="settingsForm">
+      <h2>設定</h2>
+      <label>主題
+        <select name="theme">
+          <option value="auto">跟隨系統</option>
+          <option value="light">淺色</option>
+          <option value="dark">深色</option>
+        </select>
+      </label>
+      <label>欄位寬度：<output id="widthOut"></output>px
+        <input name="columnWidth" type="range" min="260" max="560" step="10">
+      </label>
+      <label>備份提醒
+        <select name="backupReminderDays">
+          <option value="0">不提醒</option>
+          <option value="1">每天</option>
+          <option value="3">每 3 天</option>
+          <option value="7">每週</option>
+        </select>
+      </label>
+      <div id="storageInfo" class="hint"></div>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button value="ok" class="btn primary">完成</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 通用確認 -->
+  <dialog id="confirmDialog" class="dialog">
+    <form method="dialog">
+      <h2 id="confirmTitle">確認</h2>
+      <p id="confirmText"></p>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button value="cancel" class="btn">取消</button>
+        <button value="ok" class="btn danger" id="confirmOk">確定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/model.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/io.js"></script>
+  <script src="js/app.js"></script>
+  <script src="sw-register.js"></script>
+</body>
+</html>

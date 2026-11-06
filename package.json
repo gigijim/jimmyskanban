@@ -1,0 +1,13 @@
+{
+  "name": "jimmyskanban",
+  "version": "1.0.0",
+  "description": "離線個人看板（PWA / 單一 HTML 檔），無任何相依套件",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node tools/serve.js 8080",
+    "test": "node --test",
+    "icons": "node tools/make-icons.js",
+    "build": "node tools/build-single.js"
+  }
+}
