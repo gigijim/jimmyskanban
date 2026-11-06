@@ -163,6 +163,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
       record: Record;
       toDone?: boolean;
     }) => {
+      StorageService.logActivity();
       setColumns((columns) =>
         moveRecord({
           columns,
@@ -179,6 +180,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
 
   const handleAddRecord = React.useCallback(
     ({ column, record }: { column: Column; record: Record }) => {
+      StorageService.logActivity();
       const columnIndex = getColumnIndex(column.id);
       setColumns((_columns: Column[]) => {
         const columns = cloneColumns(_columns);
@@ -204,6 +206,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
 
   const handleRecordEdit = React.useCallback(
     ({ column, record }: { column: Column; record: Record }) => {
+      StorageService.logActivity();
       const columnIndex = getColumnIndex(column.id);
       const recordIndex = getRecordIndex(record.id, column.id);
       setColumns((_columns) => {
@@ -232,6 +235,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
   /** 右下角印章選單：空白 / 急件 / 完成 */
   const handleRecordStamp = React.useCallback(
     ({ column, record, stamp }: { column: Column; record: Record; stamp?: Stamp }) => {
+      StorageService.logActivity();
       setColumns((_columns) => {
         const columns = cloneColumns(_columns);
         const col = columns.find((c) => c.id === column.id);
@@ -248,6 +252,7 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
 
   const handleRecordDelete = React.useCallback(
     ({ column, record }: { column: Column; record: Record }) => {
+      StorageService.logActivity();
       const columnIndex = getColumnIndex(column.id);
       const recordIndex = getRecordIndex(record.id, column.id);
       setColumns((_columns) => {

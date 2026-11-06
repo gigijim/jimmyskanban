@@ -104,15 +104,15 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0,
   },
   stampImportant: {
-    border: "3px double #d32f2f",
-    color: "#d32f2f",
-    backgroundColor: "rgba(211,47,47,.08)",
+    border: `3px double ${theme.palette.type === "dark" ? "#FF453A" : "#d32f2f"}`,
+    color: theme.palette.type === "dark" ? "#FF453A" : "#d32f2f",
+    backgroundColor: theme.palette.type === "dark" ? "rgba(255,69,58,.14)" : "rgba(211,47,47,.08)",
   },
   stampDone: {
-    border: "3px double #2e7d32",
-    color: "#2e7d32",
+    border: `3px double ${theme.palette.type === "dark" ? "#30D158" : "#2e7d32"}`,
+    color: theme.palette.type === "dark" ? "#30D158" : "#2e7d32",
     borderRadius: 40,
-    backgroundColor: "rgba(255,255,255,.35)",
+    backgroundColor: theme.palette.type === "dark" ? "rgba(48,209,88,.12)" : "rgba(255,255,255,.35)",
   },
 }));
 

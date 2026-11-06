@@ -67,9 +67,22 @@ const build = (shade: keyof typeof c.red, override: { [k in Hue]?: keyof typeof 
 };
 
 export const RecordColor = build(200);
-export const DarkRecordColor = build(500, DARK_RECORD_OVERRIDE);
 export const ColumnColor = build(100);
-export const DarkColumnColor = build(400, DARK_COLUMN_OVERRIDE);
+
+// 深色模式：在 Apple 深灰表面上疊一層原本的色相（像 macOS 的帶色側欄），白字對比清楚
+const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const mix = (color: string, base: string, amount: number) => {
+  const a = hex(color);
+  const b = hex(base);
+  return "#" + a.map((v, i) => Math.round(v * amount + b[i] * (1 - amount)).toString(16).padStart(2, "0")).join("");
+};
+const tint = (source: { [k: string]: string }, base: string, amount: number) => {
+  const out: any = {};
+  Object.keys(source).forEach((k) => (out[k] = source[k] ? mix(source[k], base, amount) : base));
+  return out as typeof source;
+};
+export const DarkRecordColor = tint(build(400, DARK_RECORD_OVERRIDE), "#2C2C2E", 0.42);
+export const DarkColumnColor = tint(build(400, DARK_COLUMN_OVERRIDE), "#1C1C1E", 0.2);
 
 /** 顏色名稱（色票的滑鼠提示） */
 export const ColorName: { [k in Hue | "Default"]: string } = {
@@ -97,4 +110,4 @@ export const ColorName: { [k in Hue | "Default"]: string } = {
 
 /** 已完成便條紙：疊在原本底色上的深灰色濾層，仍隱約透出原本的顏色 */
 export const DONE_OVERLAY = "linear-gradient(rgba(125,125,125,.78), rgba(125,125,125,.78))";
-export const DARK_DONE_OVERLAY = "linear-gradient(rgba(38,38,38,.82), rgba(38,38,38,.82))";
+export const DARK_DONE_OVERLAY = "linear-gradient(rgba(10,10,10,.62), rgba(10,10,10,.62))";

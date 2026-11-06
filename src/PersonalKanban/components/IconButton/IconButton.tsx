@@ -7,6 +7,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import ActivityIcon from "@material-ui/icons/GridOn";
+import DarkModeIcon from "@material-ui/icons/Brightness4";
+import LightModeIcon from "@material-ui/icons/Brightness7";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
 import InvertColorsIcon from "@material-ui/icons/InvertColors";
@@ -25,6 +28,9 @@ const icons = {
   delete: DeleteIcon,
   add: AddIcon,
   addCircle: AddCircleIcon,
+  activity: ActivityIcon,
+  darkMode: DarkModeIcon,
+  lightMode: LightModeIcon,
   deleteSweep: DeleteSweepIcon,
   deleteForever: DeleteForeverIcon,
   invertColors: InvertColorsIcon,

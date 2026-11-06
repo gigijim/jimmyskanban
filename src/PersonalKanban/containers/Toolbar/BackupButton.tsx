@@ -23,6 +23,7 @@ import { fileStamp, pickJSON, saveFile } from "PersonalKanban/services/FileServi
 import { formatTime, mergeColumns, toCSV } from "PersonalKanban/services/Utils";
 import { makeBackup, NewerSchemaError, readBackup } from "PersonalKanban/services/Schema";
 import { APP_VERSION } from "PersonalKanban/services/Version";
+import SecureTextDialog from "./SecureTextDialog";
 
 type BackupButtonProps = {
   columns: Column[];
@@ -43,6 +44,29 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
   const [confirm, setConfirm] = React.useState<Confirm>(null);
   const [snapshots, setSnapshots] = React.useState<Snapshot[] | null>(null);
   const [lastBackup, setLastBackup] = React.useState(StorageService.getLastBackup());
+  const [secureMode, setSecureMode] = React.useState<"export" | "import" | null>(null);
+
+  const markBackedUp = () => {
+    const now = new Date().toISOString();
+    StorageService.setLastBackup(now);
+    setLastBackup(now);
+  };
+
+  /** 加密文字解密成功後：與檔案匯入相同的確認流程（先存快照再套用） */
+  const confirmImport = (incoming: Column[], mode: "replace" | "merge") => {
+    const next = mode === "merge" ? mergeColumns(columns, incoming) : incoming;
+    const vars = { columns: incoming.length, records: countRecords(incoming) };
+    setConfirm({
+      title: mode === "merge" ? t("importMerge") : t("importReplace"),
+      text: mode === "merge" ? t("importConfirmMerge", vars) : t("importConfirmReplace", vars),
+      onOk: async () => {
+        await StorageService.addSnapshot(columns, "beforeImport");
+        onReplaceBoard(next);
+        setSecureMode(null);
+        setMessage(t("importDone"));
+      },
+    });
+  };
 
   const close = () => setAnchorEl(null);
 
@@ -138,6 +162,23 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
         <MenuItem onClick={() => handleImport("replace")}>{t("importReplace")}</MenuItem>
         <MenuItem onClick={() => handleImport("merge")}>{t("importMerge")}</MenuItem>
         <Divider />
+        <MenuItem
+          onClick={() => {
+            close();
+            setSecureMode("export");
+          }}
+        >
+          {t("secureExport")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            close();
+            setSecureMode("import");
+          }}
+        >
+          {t("secureImport")}
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={openSnapshots}>{t("snapshots")}</MenuItem>
         <Divider />
         <MenuItem disabled>
@@ -146,6 +187,14 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
           </Typography>
         </MenuItem>
       </Menu>
+
+      <SecureTextDialog
+        mode={secureMode}
+        columns={columns}
+        onClose={() => setSecureMode(null)}
+        onImport={confirmImport}
+        onExported={markBackedUp}
+      />
 
       <Dialog open={Boolean(confirm)} onClose={() => setConfirm(null)}>
         <DialogTitle>{confirm?.title}</DialogTitle>

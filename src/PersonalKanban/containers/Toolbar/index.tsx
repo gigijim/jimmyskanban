@@ -24,6 +24,7 @@ import BackupButton from "./BackupButton";
 import InstallButton from "./InstallButton";
 import UpdateButton from "./UpdateButton";
 import SearchBox from "./SearchBox";
+import ActivityButton from "./ActivityButton";
 
 type AddColumnButtonProps = {
   onSubmit: any;
@@ -182,13 +183,18 @@ const LanguageButton: React.FC<LanguageButtonProps> = (props) => {
   );
 };
 
+/** 切換淺色 / 深色模式（淺色時顯示月亮，深色時顯示太陽） */
 const DarkThemeButton: React.FC<{}> = () => {
   const { darkTheme, handleToggleDarkTheme } = useTheme();
+  const { t } = useTranslation();
+  const label = darkTheme ? t("switchToLight") : t("switchToDark");
 
   return (
     <IconButton
       color="inherit"
-      icon={darkTheme ? "invertColors" : "invertColorsOff"}
+      icon={darkTheme ? "lightMode" : "darkMode"}
+      title={label}
+      aria-label={label}
       onClick={handleToggleDarkTheme}
     />
   );
@@ -267,6 +273,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         <Box display="flex" flexGrow={1} />
         <Box display="flex">
           <AddColumnButton onSubmit={onNewColumn} />
+          &nbsp;
+          <ActivityButton columns={columns} />
           &nbsp;
           <BackupButton columns={columns} onReplaceBoard={onReplaceBoard} />
           &nbsp;

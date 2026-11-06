@@ -86,7 +86,7 @@ const useSectionStyles = makeStyles((theme) => ({
     "&:hover": { backgroundColor: theme.palette.action.hover },
   },
   dropping: {
-    backgroundColor: "rgba(0,0,0,0.06)",
+    backgroundColor: theme.palette.action.hover,
   },
   divider: {
     marginTop: theme.spacing(1),

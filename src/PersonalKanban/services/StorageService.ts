@@ -1,11 +1,13 @@
 import { Column } from "PersonalKanban/types";
 import { readBackup, SCHEMA_VERSION } from "PersonalKanban/services/Schema";
+import type { ActivityLog } from "PersonalKanban/services/Activity";
 
 /*
  * 本機資料庫（單純化設計）
  * IndexedDB 只有一個 object store「kv」：
  *   kv["columns"]   = 整個看板（與原版相同的 Column[] 結構）
  *   kv["snapshots"] = 自動快照（最多 MAX_SNAPSHOTS 份）
+ *   kv["activity"]  = 活動紀錄 { since, days: { "YYYY-MM-DD": 次數 } }（只存在本機，不進備份）
  * 啟動時先載入到記憶體，之後讀取為同步（維持原版 API），寫入為防抖非同步。
  * IndexedDB 不可用時退回 localStorage。
  */
@@ -13,6 +15,7 @@ import { readBackup, SCHEMA_VERSION } from "PersonalKanban/services/Schema";
 const DARK_MODE = "dark_mode";
 const COLUMNS = "columns";
 const SNAPSHOTS = "snapshots";
+const ACTIVITY = "activity";
 const META = "meta";
 const LAST_BACKUP = "last_backup";
 const DB_NAME = "jimmyskanban";
@@ -135,6 +138,8 @@ export async function init() {
       }
     }
     if (storedVersion <= SCHEMA_VERSION) await idbSet(META, { ...meta, schemaVersion: SCHEMA_VERSION });
+    const act = await idbGet(ACTIVITY);
+    if (act && typeof act.since === "string" && act.days && typeof act.days === "object") activityCache = act;
   } catch (e) {
     console.error("[JimmysKanban] 讀取資料庫失敗", e);
   }
@@ -205,6 +210,31 @@ async function maybeAutoSnapshot(columns: Column[]) {
   await addSnapshot(columns, "auto");
 }
 
+// ---------- 活動紀錄
+let activityCache: ActivityLog | null = null;
+let activityTimer: any;
+
+const today = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+
+export function getActivity(): ActivityLog | null {
+  return activityCache;
+}
+
+/** 記錄一次便條紙操作（新增 / 編輯 / 蓋章 / 移動 / 刪除） */
+export function logActivity(count = 1) {
+  const d = today();
+  if (!activityCache) activityCache = { since: d, days: {} };
+  activityCache = { ...activityCache, days: { ...activityCache.days, [d]: (activityCache.days[d] || 0) + count } };
+  clearTimeout(activityTimer);
+  activityTimer = setTimeout(() => {
+    idbSet(ACTIVITY, activityCache).catch((e) => console.error("[JimmysKanban] 活動紀錄存檔失敗", e));
+  }, 500);
+}
+
 export function getLastBackup(): string | null {
   return getItem(LAST_BACKUP);
 }
@@ -231,6 +261,8 @@ const StorageService = {
   getLastBackup,
   setLastBackup,
   getBackend,
+  getActivity,
+  logActivity,
 };
 
 export default StorageService;
