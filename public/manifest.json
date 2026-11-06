@@ -1,0 +1,14 @@
+{
+  "short_name": "JimmysKanban",
+  "name": "JimmysKanban 離線看板",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "32x32", "type": "image/x-icon" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "theme_color": "#795548",
+  "background_color": "#ffffff"
+}
