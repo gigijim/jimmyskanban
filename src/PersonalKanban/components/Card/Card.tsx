@@ -112,6 +112,11 @@ const useStyles = makeStyles((theme) => ({
     border: `3px double ${theme.palette.type === "dark" ? "#30D158" : "#2e7d32"}`,
     color: theme.palette.type === "dark" ? "#30D158" : "#2e7d32",
     borderRadius: 40,
+    // 粗獷的英文印章字體
+    fontFamily: "'Black Ops One', Impact, 'Arial Black', sans-serif",
+    fontWeight: 400,
+    fontSize: 14,
+    letterSpacing: 1.5,
     backgroundColor: theme.palette.type === "dark" ? "rgba(48,209,88,.12)" : "rgba(255,255,255,.35)",
   },
 }));

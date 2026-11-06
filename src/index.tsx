@@ -5,6 +5,8 @@ import ReactDOM from "react-dom";
 import "@fontsource/nunito/300.css";
 import "@fontsource/nunito/400.css";
 import "@fontsource/nunito/700.css";
+// 「Done!」印章用的粗獷英文字體（打包進程式，離線可用）
+import "@fontsource/black-ops-one/latin-400.css";
 
 import StorageService from "PersonalKanban/services/StorageService";
 import "./index.css";
