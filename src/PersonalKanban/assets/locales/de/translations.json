@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "Vor Update",
   "snapshotReason_beforeMigration": "Vor Datenaktualisierung",
   "showAllDone": "{{n}} weitere erledigte anzeigen",
-  "collapseDone": "Erledigte einklappen"
+  "collapseDone": "Erledigte einklappen",
+  "resizeColumn": "Ziehen zum Ändern der Breite (Doppelklick: zurücksetzen)"
 }

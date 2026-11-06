@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "Avant mise à jour",
   "snapshotReason_beforeMigration": "Avant mise à niveau des données",
   "showAllDone": "Afficher {{n}} terminées de plus",
-  "collapseDone": "Réduire les terminées"
+  "collapseDone": "Réduire les terminées",
+  "resizeColumn": "Faites glisser pour redimensionner (double-clic pour réinitialiser)"
 }

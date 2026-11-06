@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "更新前",
   "snapshotReason_beforeMigration": "データ移行前",
   "showAllDone": "完了をあと {{n}} 件表示",
-  "collapseDone": "完了を折りたたむ"
+  "collapseDone": "完了を折りたたむ",
+  "resizeColumn": "ドラッグで幅を変更（ダブルクリックで自動に戻す）"
 }

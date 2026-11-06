@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "Antes de actualizar",
   "snapshotReason_beforeMigration": "Antes de actualizar datos",
   "showAllDone": "Mostrar {{n}} completadas más",
-  "collapseDone": "Contraer completadas"
+  "collapseDone": "Contraer completadas",
+  "resizeColumn": "Arrastra para cambiar el ancho (doble clic para restablecer)"
 }

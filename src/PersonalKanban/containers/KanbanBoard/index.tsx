@@ -106,6 +106,11 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
         columns[columnIndex].color = column.color;
         columns[columnIndex].wipEnabled = column.wipEnabled;
         columns[columnIndex].wipLimit = column.wipLimit;
+        // 自訂欄寬（拖曳欄位右側邊緣）；0 = 恢復自動
+        if ("width" in column) {
+          if (column.width) columns[columnIndex].width = column.width;
+          else delete columns[columnIndex].width;
+        }
         return columns;
       });
     },

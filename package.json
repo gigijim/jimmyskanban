@@ -1,6 +1,6 @@
 {
   "name": "jimmyskanban",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "private": true,
   "description": "離線個人看板：以 nishantpainter/personal-kanban 為基礎延伸（PWA / 單一 HTML 檔）",
   "license": "MIT",

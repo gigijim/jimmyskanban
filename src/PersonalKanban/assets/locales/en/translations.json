@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "Before update",
   "snapshotReason_beforeMigration": "Before data upgrade",
   "showAllDone": "Show {{n}} more done",
-  "collapseDone": "Collapse done"
+  "collapseDone": "Collapse done",
+  "resizeColumn": "Drag to resize (double-click to reset)"
 }

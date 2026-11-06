@@ -26,4 +26,6 @@ export type Column = {
   wipLimit?: number;
   wipEnabled?: boolean;
   createdAt?: string;
+  /** 自訂欄寬（px）；沒有 = 依視窗寬度自動分配。選填欄位，不影響舊版備份相容性 */
+  width?: number;
 };

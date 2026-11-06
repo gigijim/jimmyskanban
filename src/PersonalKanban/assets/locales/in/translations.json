@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "अपडेट से पहले",
   "snapshotReason_beforeMigration": "डेटा अपग्रेड से पहले",
   "showAllDone": "{{n}} और पूर्ण दिखाएँ",
-  "collapseDone": "पूर्ण छिपाएँ"
+  "collapseDone": "पूर्ण छिपाएँ",
+  "resizeColumn": "चौड़ाई बदलने के लिए खींचें (रीसेट के लिए डबल-क्लिक)"
 }

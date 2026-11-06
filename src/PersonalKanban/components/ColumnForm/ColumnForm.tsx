@@ -20,6 +20,8 @@ type ColumnFormProps = {
   column?: Partial<Column>;
   onSubmit: any;
   onCancel: any;
+  /** 有傳入時，在視窗左下角顯示「刪除欄位」 */
+  onDelete?: any;
   disabled?: boolean;
   formTitle?: string;
 };
@@ -33,6 +35,7 @@ const ColumnForm: React.FC<ColumnFormProps> = (props) => {
     formTitle = t("addColumn"),
     onSubmit,
     onCancel,
+    onDelete,
   } = props;
 
   const { values, errors, handleChange, handleSubmit } = useFormik({
@@ -157,7 +160,7 @@ const ColumnForm: React.FC<ColumnFormProps> = (props) => {
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{ display: "flex", alignItems: "center" }}>
           <Button variant="outlined" disabled={disabled} onClick={onCancel}>
             {t("cancel")}
           </Button>
@@ -170,6 +173,16 @@ const ColumnForm: React.FC<ColumnFormProps> = (props) => {
           >
             {t("submit")}
           </Button>
+          {onDelete && (
+            <Button
+              variant="outlined"
+              disabled={disabled}
+              onClick={onDelete}
+              style={{ marginLeft: "auto", color: "#d32f2f", borderColor: "#d32f2f" }}
+            >
+              {t("deleteColumn")}
+            </Button>
+          )}
         </Grid>
       </Grid>
     </form>

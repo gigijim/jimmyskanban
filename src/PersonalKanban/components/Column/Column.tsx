@@ -20,63 +20,117 @@ import { Record, Column as ColumnType } from "PersonalKanban/types";
 import { useTheme } from "PersonalKanban/providers/ThemeProvider";
 import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 import { activeCount } from "PersonalKanban/services/Utils";
+import { useSyncedHeight } from "PersonalKanban/components/KanbanColumn/ActiveAreaHeight";
 
-const useColumnHeaderStyles = makeStyles((theme) => ({
-  divider: {
-    marginTop: theme.spacing(0.5),
-    marginBottom: theme.spacing(1),
-  },
-}));
+const MIN_COLUMN_WIDTH = 150;
+const MAX_COLUMN_WIDTH = 900;
+
+const useColumnHeaderStyles = makeStyles((theme) => {
+  // 標題列固定在畫面上方（工具列下面）：top 跟著工具列高度
+  const tb: any = theme.mixins.toolbar;
+  const top: any = { top: tb.minHeight };
+  Object.keys(tb)
+    .filter((k) => k.startsWith("@media"))
+    .forEach((k) => (top[k] = { top: tb[k].minHeight }));
+  return {
+    sticky: {
+      position: "sticky",
+      ...top,
+      zIndex: 3,
+      // 蓋住捲上來的卡片：用欄位本身的底色，並延伸到欄位內距
+      backgroundColor: "inherit",
+      margin: -8,
+      marginBottom: 0,
+      padding: "8px 8px 0",
+      borderRadius: "4px 4px 0 0",
+    },
+    title: {
+      // 完整顯示標題（可換行），不截斷
+      lineHeight: 1.35,
+      wordBreak: "break-word",
+      flex: 1,
+      minWidth: 0,
+      paddingTop: 2,
+    },
+    add: {
+      padding: 2,
+      marginLeft: 2,
+    },
+    divider: {
+      marginTop: theme.spacing(0.5),
+      marginBottom: theme.spacing(1),
+    },
+  };
+});
 
 type ColumnHeaderProps = {
+  columnId?: string;
   title: string;
   description?: string;
   onEdit?: any;
   onDelete?: any;
+  onAddRecord?: any;
+  disableAddRecordAction?: boolean;
   showEditAction?: boolean;
   showDeleteAction?: boolean;
+  showAddRecordAction?: boolean;
 };
 
 export const ColumnHeader: React.FC<ColumnHeaderProps> = (props) => {
   const {
+    columnId = "",
     title,
     description,
     showEditAction,
-    showDeleteAction,
+    showAddRecordAction,
+    disableAddRecordAction,
     onEdit,
-    onDelete,
+    onAddRecord,
   } = props;
 
   const classes = useColumnHeaderStyles();
-  return (
-    <>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        marginBottom={0.5}
-      >
-        <Typography variant="subtitle1" title={title} noWrap style={{ lineHeight: 1.4 }}>
-          <b>{title}</b>
-        </Typography>
-        <Box display="flex" alignItems="center">
-          {showEditAction && <IconButton icon="edit" onClick={onEdit} />}
-          {showDeleteAction && (
-            <IconButton icon="deleteForever" onClick={onDelete} />
-          )}
-        </Box>
-      </Box>
-      {/* 固定一行高度：有沒有說明的欄位，下方區塊都對齊 */}
-      <Typography title={description} noWrap gutterBottom style={{ minHeight: "1.5em" }}>
-        {description}
-      </Typography>
+  const { t } = useTranslation();
 
+  // 各欄標題列等高（取最高的），下方的進行中 / 已完成區才對齊
+  const { minHeight, contentRef } = useSyncedHeight("header", columnId);
+
+  return (
+    <div className={classes.sticky}>
+      <div style={{ minHeight }}>
+        <div ref={contentRef}>
+          <Box display="flex" alignItems="flex-start" justifyContent="space-between" marginBottom={0.5}>
+            <Typography variant="subtitle1" title={title} className={classes.title}>
+              <b>{title}</b>
+            </Typography>
+            <Box display="flex" alignItems="center" flexShrink={0}>
+              {showEditAction && <IconButton icon="edit" title={t("editColumn")} onClick={onEdit} />}
+              {showAddRecordAction && (
+                <IconButton
+                  icon="addCircle"
+                  color="primary"
+                  className={classes.add}
+                  title={t("addRecord")}
+                  aria-label={t("addRecord")}
+                  disabled={disableAddRecordAction}
+                  onClick={onAddRecord}
+                  iconProps={{ style: { fontSize: 30 } }}
+                />
+              )}
+            </Box>
+          </Box>
+          {description && description.trim() && (
+            <Typography variant="body2" title={description} gutterBottom style={{ wordBreak: "break-word" }}>
+              {description}
+            </Typography>
+          )}
+        </div>
+      </div>
       <Divider className={classes.divider} />
-    </>
+    </div>
   );
 };
 
-ColumnHeader.defaultProps = { showEditAction: true, showDeleteAction: true };
+ColumnHeader.defaultProps = { showEditAction: true, showDeleteAction: false, showAddRecordAction: true };
 
 const useColumnActionStyles = makeStyles((theme) => ({
   divider: {
@@ -211,10 +265,41 @@ export const ColumnFooter: React.FC<ColumnFooterProps> = (props) => {
   );
 };
 
-const useColumnStyles = makeStyles(() => ({
+const useColumnStyles = makeStyles((theme) => ({
   paper: (props: any) => ({
     backgroundColor: props.backgroundColor,
+    position: "relative",
   }),
+  // 欄位右側邊緣：拖曳調整欄寬，雙擊恢復自動寬度
+  // （用 <button> 是因為 react-beautiful-dnd 不會從按鈕開始拖曳欄位）
+  resizer: {
+    position: "absolute",
+    top: 0,
+    right: -5,
+    width: 10,
+    height: "100%",
+    padding: 0,
+    border: 0,
+    background: "transparent",
+    cursor: "col-resize",
+    zIndex: 4,
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 4,
+      width: 2,
+      borderRadius: 1,
+      background: "transparent",
+      transition: "background .15s",
+    },
+    "&:hover::after, &$resizing::after": {
+      background: theme.palette.primary.main,
+    },
+    "&:focus": { outline: "none" },
+  },
+  resizing: {},
 }));
 
 type ColumnProps = {
@@ -255,7 +340,7 @@ const Column: React.FC<ColumnProps> = (props) => {
     showAddRecordAction,
     showDeleteAllRecordAction,
     ColumnHeaderComponent = ColumnHeader,
-    ColumnActionComponent = ColumnAction,
+    ColumnActionComponent = null,
     ColumnCardListComponent = ColumnCardList,
     ColumnFooterComponent = ColumnFooter,
     ...rest
@@ -269,6 +354,7 @@ const Column: React.FC<ColumnProps> = (props) => {
     records = [],
     wipEnabled,
     wipLimit = Infinity,
+    width,
   } = column;
 
   // WIP 上限只計算「進行中」區塊
@@ -383,11 +469,68 @@ const Column: React.FC<ColumnProps> = (props) => {
           handleEdit(column);
         }}
         onCancel={handleCloseDialog}
+        onDelete={onDelete ? handleOpenDeleteDialog : undefined}
       ></ColumnForm>
     );
 
     handleOpenDialog({ content });
-  }, [column, t, handleOpenDialog, handleCloseDialog, handleEdit]);
+  }, [column, t, onDelete, handleOpenDialog, handleCloseDialog, handleEdit, handleOpenDeleteDialog]);
+
+  // ---- 拖曳右側邊緣調整欄寬（放開滑鼠才存檔）
+  const paperRef = React.useRef<HTMLElement | null>(null);
+  const [dragWidth, setDragWidth] = React.useState<number | null>(null);
+
+  const setRefs = React.useCallback(
+    (el: HTMLElement | null) => {
+      paperRef.current = el;
+      if (typeof innerRef === "function") innerRef(el);
+      else if (innerRef) innerRef.current = el;
+    },
+    [innerRef]
+  );
+
+  const handleResizeStart = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (e.button !== 0 || !paperRef.current) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const startX = e.clientX;
+      const startWidth = paperRef.current.getBoundingClientRect().width;
+      let latest = startWidth;
+      const onMove = (ev: MouseEvent) => {
+        latest = Math.round(Math.min(MAX_COLUMN_WIDTH, Math.max(MIN_COLUMN_WIDTH, startWidth + ev.clientX - startX)));
+        setDragWidth(latest);
+      };
+      const onUp = () => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        setDragWidth(null);
+        if (Math.abs(latest - startWidth) >= 2) onEdit && onEdit({ column: { ...column, width: latest } });
+      };
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+    },
+    [column, onEdit]
+  );
+
+  const handleResizeReset = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (width) onEdit && onEdit({ column: { ...column, width: 0 } });
+    },
+    [column, width, onEdit]
+  );
+
+  const effectiveWidth = dragWidth || width;
+  const widthStyle = effectiveWidth
+    ? { flex: `0 0 ${effectiveWidth}px`, width: effectiveWidth, minWidth: effectiveWidth, maxWidth: effectiveWidth }
+    : null;
+  const { style: rbdStyle, ...paperRest } = rest as any;
 
   const handleOpenAddRecordDialog = React.useCallback(() => {
     const content = (
@@ -482,25 +625,30 @@ const Column: React.FC<ColumnProps> = (props) => {
     <Paper
       elevation={4}
       className={clsx(className, classes.paper)}
-      ref={innerRef}
-      {...rest}
+      ref={setRefs}
+      style={{ ...rbdStyle, ...widthStyle }}
+      {...paperRest}
     >
       <ColumnHeaderComponent
+        columnId={column.id}
         title={title}
         description={description}
         showEditAction={showEditAction}
-        showDeleteAction={showDeleteAction}
-        onEdit={handleOpenEditDialog}
-        onDelete={handleOpenDeleteDialog}
-      />
-      <ColumnActionComponent
         showAddRecordAction={showAddRecordAction}
-        showDeleteAllRecordAction={showDeleteAllRecordAction}
         disableAddRecordAction={disableAddRecordAction}
-        disableAllRecordDeleteAction={disableAllRecordDeleteAction}
+        onEdit={handleOpenEditDialog}
         onAddRecord={handleOpenAddRecordDialog}
-        onDeleteAllRecord={handleOpenDeleteAllRecordDialog}
       />
+      {ColumnActionComponent && (
+        <ColumnActionComponent
+          showAddRecordAction={showAddRecordAction}
+          showDeleteAllRecordAction={showDeleteAllRecordAction}
+          disableAddRecordAction={disableAddRecordAction}
+          disableAllRecordDeleteAction={disableAllRecordDeleteAction}
+          onAddRecord={handleOpenAddRecordDialog}
+          onDeleteAllRecord={handleOpenDeleteAllRecordDialog}
+        />
+      )}
       <ColumnCardListComponent
         column={column}
         onRecordEdit={handleOpenEditRecordDialog}
@@ -508,6 +656,17 @@ const Column: React.FC<ColumnProps> = (props) => {
         onRecordStamp={onRecordStamp ? handleRecordStamp : undefined}
       />
       <ColumnFooterComponent content={caption} />
+      {onEdit && (
+        <button
+          type="button"
+          tabIndex={-1}
+          className={clsx(classes.resizer, dragWidth && classes.resizing)}
+          title={t("resizeColumn")}
+          aria-label={t("resizeColumn")}
+          onMouseDown={handleResizeStart}
+          onDoubleClick={handleResizeReset}
+        />
+      )}
       <Dialog open={dialog.open} onClose={handleCloseDialog} fullWidth maxWidth="sm">
         <DialogTitle>{dialog.title}</DialogTitle>
         <DialogContent>{dialog.content}</DialogContent>

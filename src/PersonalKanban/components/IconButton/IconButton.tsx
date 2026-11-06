@@ -6,6 +6,7 @@ import MuiIconButton, {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
 import InvertColorsIcon from "@material-ui/icons/InvertColors";
@@ -23,6 +24,7 @@ const icons = {
   edit: EditIcon,
   delete: DeleteIcon,
   add: AddIcon,
+  addCircle: AddCircleIcon,
   deleteSweep: DeleteSweepIcon,
   deleteForever: DeleteForeverIcon,
   invertColors: InvertColorsIcon,

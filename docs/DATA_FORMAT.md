@@ -37,7 +37,9 @@
 }
 ```
 
-`stamp`：`""`（無）、`"important"`（特重要）、`"done"`（已完成!）。
+`stamp`：`""`（空白）、`"important"`（急件，v2.3 前顯示為「特重要」）、`"done"`（完成）。
+
+欄位的選填欄位 `width`（v2.4 起）：自訂欄寬（px），沒有這個欄位代表依視窗寬度自動分配。屬於 schema 1 的選填欄位，舊版讀到會原樣保留。
 
 匯入也接受：原版的 `columns` 陣列、從原版網站匯出的 `{ "app": "PersonalKanban-export", "columns": [...] }`、v2.0 沒有 `schemaVersion` 的備份。
 

@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.75rem",
     lineHeight: 1.6,
   },
+  deleteButton: {
+    "&:hover": { color: theme.palette.error.main },
+  },
   menuItem: {
     minHeight: 32,
     fontWeight: 700,
@@ -206,7 +209,7 @@ const Card: React.FC<CardProps> = (props) => {
         <Box display="flex" alignItems="center" flexShrink={0}>
           {showEditAction && <IconButton icon="edit" onClick={handleEdit} />}
           {showDeleteAction && (
-            <IconButton icon="deleteForever" onClick={handleDelete} />
+            <IconButton icon="deleteForever" className={classes.deleteButton} onClick={handleDelete} />
           )}
         </Box>
       </Box>

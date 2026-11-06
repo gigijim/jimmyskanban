@@ -83,5 +83,6 @@
   "snapshotReason_beforeUpdate": "Перед обновлением",
   "snapshotReason_beforeMigration": "Перед обновлением данных",
   "showAllDone": "Показать ещё {{n}} выполненных",
-  "collapseDone": "Свернуть выполненные"
+  "collapseDone": "Свернуть выполненные",
+  "resizeColumn": "Перетащите, чтобы изменить ширину (двойной щелчок — сброс)"
 }
