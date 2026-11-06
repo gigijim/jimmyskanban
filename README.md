@@ -1,6 +1,8 @@
 # JimmysKanban 離線看板
 
 改寫自 [nishantpainter/personal-kanban](https://github.com/nishantpainter/personal-kanban)（MIT）。
+
+**👉 線上使用 / 安裝：https://gigijim.github.io/jimmyskanban/**
 原版是 React + Material-UI + localStorage；本版改成**零相依、無建置步驟**的純 HTML/CSS/JS，
 專為「公司電腦擋 Chrome 擴充套件、不能裝軟體」的環境設計。
 
@@ -8,7 +10,7 @@
 
 | 方式 | 適合 | 怎麼做 |
 |---|---|---|
-| **A. 網頁一鍵安裝（PWA）** | 能連到網址一次的電腦 | 用 Edge / Chrome 打開網址 → 按右上角「📥 安裝到電腦」（或網址列的安裝圖示）。之後從開始功能表/桌面開啟，**完全離線可用** |
+| **A. 網頁一鍵安裝（PWA）** | 能連到網址一次的電腦 | 用 Edge / Chrome 打開 **https://gigijim.github.io/jimmyskanban/** → 按右上角「📥 安裝到電腦」（或網址列的安裝圖示）。之後從開始功能表/桌面開啟，**完全離線可用** |
 | **B. 單一 HTML 檔** | 完全不能上網、或網址被擋 | 下載 [`dist/jimmyskanban-offline.html`](dist/jimmyskanban-offline.html)（約 80 KB），放在桌面或網路磁碟，**雙擊即用** |
 | **C. 內網自架** | 想給整個部門用 | 把整個資料夾放到任何靜態網頁伺服器（IIS、Nginx、內網 SharePoint 靜態站），或 `node tools/serve.js 8080` |
 
