@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "Before import",
   "snapshotReason_beforeClear": "Before clear",
   "snapshotReason_beforeRestore": "Before restore",
-  "csvHeaders": "Column,Section,Title,Description,Stamp,Created,Modified,Completed"
+  "csvHeaders": "Column,Section,Title,Description,Stamp,Created,Modified,Completed",
+  "checkUpdate": "Check for updates",
+  "currentVersion": "Current version",
+  "latestVersion": "Latest version",
+  "updateChecking": "Checking…",
+  "upToDate": "You are on the latest version.",
+  "updateAvailable": "A new version is available.",
+  "updating": "Downloading the new version…",
+  "updateOffline": "Cannot reach the update server (offline?). Your board still works offline.",
+  "updateFailed": "Update failed. Nothing was changed; the current version keeps working.",
+  "updateHint": "Only downloads when you press Update now. A snapshot is saved first, and your data is upgraded automatically if the new version changes the data format. Backing up first is recommended.",
+  "updateSingleFileHint": "This is the single-file version and cannot update itself. Back up first, then download the new file and replace the old one.",
+  "downloadLatest": "Download latest single file",
+  "checkAgain": "Check again",
+  "updateNow": "Update now",
+  "backupNewerSchema": "This backup was made by a newer version (data format is newer). Please update the app first, then import again.",
+  "snapshotReason_beforeUpdate": "Before update",
+  "snapshotReason_beforeMigration": "Before data upgrade"
 }

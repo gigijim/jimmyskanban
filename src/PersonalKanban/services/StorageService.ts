@@ -1,4 +1,5 @@
 import { Column } from "PersonalKanban/types";
+import { readBackup, SCHEMA_VERSION } from "PersonalKanban/services/Schema";
 
 /*
  * 本機資料庫（單純化設計）
@@ -12,6 +13,7 @@ import { Column } from "PersonalKanban/types";
 const DARK_MODE = "dark_mode";
 const COLUMNS = "columns";
 const SNAPSHOTS = "snapshots";
+const META = "meta";
 const LAST_BACKUP = "last_backup";
 const DB_NAME = "jimmyskanban";
 const STORE = "kv";
@@ -19,12 +21,21 @@ const LS_PREFIX = "jimmyskanban:";
 const MAX_SNAPSHOTS = 20;
 const SNAPSHOT_INTERVAL_MS = 30 * 60 * 1000;
 
-export type SnapshotReason = "auto" | "manual" | "beforeImport" | "beforeClear" | "beforeRestore";
+export type SnapshotReason =
+  | "auto"
+  | "manual"
+  | "beforeImport"
+  | "beforeClear"
+  | "beforeRestore"
+  | "beforeUpdate"
+  | "beforeMigration";
 
 export type Snapshot = {
   id: string;
   at: string;
   reason: SnapshotReason;
+  /** 快照內容的資料格式版本（v2.0 的快照沒有這個欄位 → 視為 1） */
+  schemaVersion?: number;
   columns: Column[];
 };
 
@@ -90,20 +101,40 @@ function idbSet(key: string, value: any): Promise<void> {
 
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v));
 
-/** 啟動時呼叫一次：開資料庫、載入看板（並把原版 localStorage 資料搬進來） */
+/**
+ * 啟動時呼叫一次：開資料庫、載入看板。
+ * - 資料庫記錄資料格式版本 kv["meta"].schemaVersion（v2.0 沒有這個欄位 → 視為 1）
+ * - 版本較舊時自動升級，升級前先存一份快照
+ * - 找不到資料時，把原版 Personal Kanban 的 localStorage 資料搬進來（格式 0）
+ */
 export async function init() {
   db = await openDB();
   if (!db) backend = "localstorage";
   try {
-    const saved = await idbGet(COLUMNS);
-    if (Array.isArray(saved)) columnsCache = saved;
-    else {
+    const meta = (await idbGet(META)) || {};
+    let saved = await idbGet(COLUMNS);
+    let storedVersion = typeof meta.schemaVersion === "number" ? meta.schemaVersion : 1;
+    if (!Array.isArray(saved)) {
       const legacy = lsGet(COLUMNS); // 原版 Personal Kanban 的 localStorage
       if (Array.isArray(legacy)) {
-        columnsCache = legacy;
-        await idbSet(COLUMNS, legacy);
+        saved = legacy;
+        storedVersion = 0;
       }
     }
+    if (Array.isArray(saved)) {
+      if (storedVersion > SCHEMA_VERSION) {
+        // 資料來自更新版的程式（例如更新後又回到舊版）：不覆寫，原樣使用
+        columnsCache = saved;
+      } else {
+        const { columns } = readBackup({ schemaVersion: storedVersion, columns: saved });
+        if (storedVersion < SCHEMA_VERSION) {
+          await addSnapshot(saved, "beforeMigration", storedVersion);
+          await idbSet(COLUMNS, columns);
+        }
+        columnsCache = columns;
+      }
+    }
+    if (storedVersion <= SCHEMA_VERSION) await idbSet(META, { ...meta, schemaVersion: SCHEMA_VERSION });
   } catch (e) {
     console.error("[JimmysKanban] 讀取資料庫失敗", e);
   }
@@ -161,9 +192,9 @@ export async function listSnapshots(): Promise<Snapshot[]> {
   return Array.isArray(v) ? v : [];
 }
 
-export async function addSnapshot(columns: Column[], reason: SnapshotReason) {
+export async function addSnapshot(columns: Column[], reason: SnapshotReason, schemaVersion = SCHEMA_VERSION) {
   const list = await listSnapshots();
-  list.unshift({ id: `snap-${Date.now()}`, at: new Date().toISOString(), reason, columns: clone(columns) });
+  list.unshift({ id: `snap-${Date.now()}`, at: new Date().toISOString(), reason, schemaVersion, columns: clone(columns) });
   await idbSet(SNAPSHOTS, list.slice(0, MAX_SNAPSHOTS));
 }
 

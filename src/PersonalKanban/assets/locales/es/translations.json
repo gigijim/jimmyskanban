@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "Antes de importar",
   "snapshotReason_beforeClear": "Antes de borrar",
   "snapshotReason_beforeRestore": "Antes de restaurar",
-  "csvHeaders": "Columna,Sección,Título,Descripción,Sello,Creado,Modificado,Completado"
+  "csvHeaders": "Columna,Sección,Título,Descripción,Sello,Creado,Modificado,Completado",
+  "checkUpdate": "Buscar actualizaciones",
+  "currentVersion": "Versión actual",
+  "latestVersion": "Última versión",
+  "updateChecking": "Comprobando…",
+  "upToDate": "Tienes la última versión.",
+  "updateAvailable": "Hay una nueva versión disponible.",
+  "updating": "Descargando la nueva versión…",
+  "updateOffline": "No se puede contactar con el servidor (¿sin conexión?). El tablero sigue funcionando sin conexión.",
+  "updateFailed": "La actualización falló. No se cambió nada; la versión actual sigue funcionando.",
+  "updateHint": "Solo se descarga al pulsar «Actualizar ahora». Antes se guarda una instantánea y, si la nueva versión cambia el formato de datos, tus datos se actualizan automáticamente. Se recomienda hacer una copia antes.",
+  "updateSingleFileHint": "Esta es la versión de archivo único y no puede actualizarse sola. Haz una copia, descarga el archivo nuevo y reemplaza el anterior.",
+  "downloadLatest": "Descargar el último archivo único",
+  "checkAgain": "Volver a comprobar",
+  "updateNow": "Actualizar ahora",
+  "backupNewerSchema": "Esta copia se hizo con una versión más nueva (formato de datos más nuevo). Actualiza primero la aplicación y vuelve a importar.",
+  "snapshotReason_beforeUpdate": "Antes de actualizar",
+  "snapshotReason_beforeMigration": "Antes de actualizar datos"
 }

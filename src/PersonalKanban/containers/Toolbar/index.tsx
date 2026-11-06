@@ -22,6 +22,7 @@ import { Column } from "PersonalKanban/types";
 import { useTheme } from "PersonalKanban/providers/ThemeProvider";
 import BackupButton from "./BackupButton";
 import InstallButton from "./InstallButton";
+import UpdateButton from "./UpdateButton";
 
 type AddColumnButtonProps = {
   onSubmit: any;
@@ -254,6 +255,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           <BackupButton columns={columns} onReplaceBoard={onReplaceBoard} />
           &nbsp;
           <InstallButton />
+          &nbsp;
+          <UpdateButton columns={columns} />
           &nbsp;
           <ClearBoardButton
             disabled={clearButtonDisabled}

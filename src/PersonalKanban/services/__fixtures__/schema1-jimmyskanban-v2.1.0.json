@@ -1,0 +1,50 @@
+{
+  "app": "JimmysKanban",
+  "format": "jimmyskanban-backup",
+  "schemaVersion": 1,
+  "appVersion": "2.1.0",
+  "exportedAt": "2026-11-06T12:00:00.000Z",
+  "columns": [
+    {
+      "id": "A",
+      "title": "待辦",
+      "color": "Orange",
+      "description": "",
+      "wipEnabled": false,
+      "wipLimit": 0,
+      "createdAt": "2026-11-06T10:00:00.000Z",
+      "records": [
+        {
+          "id": "a1",
+          "title": "特重要的事",
+          "description": "",
+          "color": "Red",
+          "createdAt": "2026-11-06T10:00:00.000Z",
+          "updatedAt": "2026-11-06T10:00:00.000Z",
+          "completedAt": null,
+          "stamp": "important"
+        },
+        {
+          "id": "a2",
+          "title": "一般",
+          "description": "",
+          "color": "",
+          "createdAt": "2026-11-06T10:00:00.000Z",
+          "updatedAt": "2026-11-06T10:00:00.000Z",
+          "completedAt": null,
+          "stamp": ""
+        },
+        {
+          "id": "a3",
+          "title": "做完了",
+          "description": "",
+          "color": "Green",
+          "createdAt": "2026-11-06T10:00:00.000Z",
+          "updatedAt": "2026-11-06T11:00:00.000Z",
+          "completedAt": "2026-11-06T11:00:00.000Z",
+          "stamp": "done"
+        }
+      ]
+    }
+  ]
+}

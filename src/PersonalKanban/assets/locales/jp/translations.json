@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "インポート前",
   "snapshotReason_beforeClear": "消去前",
   "snapshotReason_beforeRestore": "復元前",
-  "csvHeaders": "列,区分,タイトル,説明,スタンプ,作成日時,更新日時,完了日時"
+  "csvHeaders": "列,区分,タイトル,説明,スタンプ,作成日時,更新日時,完了日時",
+  "checkUpdate": "アップデートを確認",
+  "currentVersion": "現在のバージョン",
+  "latestVersion": "最新バージョン",
+  "updateChecking": "確認中…",
+  "upToDate": "最新バージョンです。",
+  "updateAvailable": "新しいバージョンがあります。",
+  "updating": "新しいバージョンをダウンロード中…",
+  "updateOffline": "アップデートサーバーに接続できません（オフライン？）。ボードはオフラインでも使えます。",
+  "updateFailed": "アップデートに失敗しました。何も変更されず、現在のバージョンはそのまま使えます。",
+  "updateHint": "「今すぐ更新」を押したときだけダウンロードします。更新前にスナップショットを保存し、新バージョンでデータ形式が変わる場合は自動で移行します。事前のバックアップをおすすめします。",
+  "updateSingleFileHint": "これは単一ファイル版のため自動更新できません。バックアップしてから新しいファイルをダウンロードし、古いファイルと置き換えてください。",
+  "downloadLatest": "最新の単一ファイルをダウンロード",
+  "checkAgain": "再確認",
+  "updateNow": "今すぐ更新",
+  "backupNewerSchema": "このバックアップは新しいバージョンで作成されています（データ形式が新しい）。先にアプリを更新してから再度インポートしてください。",
+  "snapshotReason_beforeUpdate": "更新前",
+  "snapshotReason_beforeMigration": "データ移行前"
 }

@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "导入前",
   "snapshotReason_beforeClear": "清空前",
   "snapshotReason_beforeRestore": "还原前",
-  "csvHeaders": "栏,区块,标题,描述,印章,创建时间,最后修改时间,完成时间"
+  "csvHeaders": "栏,区块,标题,描述,印章,创建时间,最后修改时间,完成时间",
+  "checkUpdate": "检查更新",
+  "currentVersion": "当前版本",
+  "latestVersion": "最新版本",
+  "updateChecking": "检查中…",
+  "upToDate": "已经是最新版本。",
+  "updateAvailable": "有新版本可以更新。",
+  "updating": "正在下载新版本…",
+  "updateOffline": "无法连接更新服务器（可能离线）。看板离线仍可正常使用。",
+  "updateFailed": "更新失败，没有任何变更，当前版本仍可正常使用。",
+  "updateHint": "按下「立即更新」才会下载新版。更新前会自动创建快照；新版若调整数据格式，会自动升级你的数据。建议先备份。",
+  "updateSingleFileHint": "这是单一 HTML 文件版本，无法自我更新。请先备份，再下载新文件替换旧文件。",
+  "downloadLatest": "下载最新单文件版",
+  "checkAgain": "重新检查",
+  "updateNow": "立即更新",
+  "backupNewerSchema": "这个备份文件来自较新的版本（数据格式较新），请先「检查更新」更新程序后再导入。",
+  "snapshotReason_beforeUpdate": "更新前",
+  "snapshotReason_beforeMigration": "数据升级前"
 }

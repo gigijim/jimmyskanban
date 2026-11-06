@@ -20,7 +20,9 @@ import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 import { Column, Stamp } from "PersonalKanban/types";
 import StorageService, { Snapshot } from "PersonalKanban/services/StorageService";
 import { fileStamp, pickJSON, saveFile } from "PersonalKanban/services/FileService";
-import { formatTime, mergeColumns, normalizeColumns, toCSV } from "PersonalKanban/services/Utils";
+import { formatTime, mergeColumns, toCSV } from "PersonalKanban/services/Utils";
+import { makeBackup, NewerSchemaError, readBackup } from "PersonalKanban/services/Schema";
+import { APP_VERSION } from "PersonalKanban/services/Version";
 
 type BackupButtonProps = {
   columns: Column[];
@@ -46,7 +48,7 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
 
   const handleExportJson = async () => {
     close();
-    const payload = { app: "JimmysKanban", version: 2, exportedAt: new Date().toISOString(), columns };
+    const payload = makeBackup(columns, APP_VERSION);
     const ok = await saveFile(
       JSON.stringify(payload, null, 2),
       `jimmyskanban-backup-${fileStamp()}.json`,
@@ -74,7 +76,7 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
     try {
       const data = await pickJSON();
       if (!data) return;
-      const incoming = normalizeColumns(data);
+      const incoming = readBackup(data).columns;
       next = mode === "merge" ? mergeColumns(columns, incoming) : incoming;
       const vars = { columns: incoming.length, records: countRecords(incoming) };
       setConfirm({
@@ -87,7 +89,7 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
         },
       });
     } catch (e) {
-      setMessage(t("importFailed"));
+      setMessage(e instanceof NewerSchemaError ? t("backupNewerSchema") : t("importFailed"));
     }
   };
 
@@ -108,14 +110,14 @@ const BackupButton: React.FC<BackupButtonProps> = (props) => {
       text: t("restoreConfirm", { time: formatTime(snap.at, "YYYY/MM/DD HH:mm:ss") }),
       onOk: async () => {
         await StorageService.addSnapshot(columns, "beforeRestore");
-        onReplaceBoard(normalizeColumns(snap.columns));
+        onReplaceBoard(readBackup({ schemaVersion: snap.schemaVersion ?? 1, columns: snap.columns }).columns);
         setMessage(t("restored"));
       },
     });
   };
 
   const handleExportSnapshot = (snap: Snapshot) => {
-    const payload = { app: "JimmysKanban", version: 2, exportedAt: snap.at, columns: snap.columns };
+    const payload = { ...makeBackup(snap.columns, APP_VERSION), schemaVersion: snap.schemaVersion ?? 1, exportedAt: snap.at };
     saveFile(JSON.stringify(payload, null, 2), `jimmyskanban-snapshot-${snap.id}.json`, "application/json", ".json");
   };
 

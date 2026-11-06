@@ -1,48 +1,46 @@
 import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { viteSingleFile } from "vite-plugin-singlefile";
-import { createHash } from "crypto";
+import { execSync } from "child_process";
+import fs from "fs";
 import path from "path";
+import { SCHEMA_VERSION } from "./src/PersonalKanban/services/schemaVersion";
+
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf8"));
+
+/** 建置編號：git commit（CI 用 GITHUB_SHA），PWA 版與單檔版相同，用來判斷有沒有新版 */
+const buildId = (() => {
+  if (process.env.JK_BUILD_ID) return process.env.JK_BUILD_ID; // 測試用
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7);
+  try {
+    const sha = execSync("git rev-parse --short=7 HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+    const dirty = execSync("git status --porcelain", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+    return dirty ? `${sha}-dev` : sha;
+  } catch (e) {
+    return `local-${Date.now().toString(36)}`;
+  }
+})();
 
 /**
- * 產生 Service Worker：預先快取所有建置出的檔案，第一次開啟後即可完全離線。
- * 快取版本由檔案清單雜湊而來，每次建置內容改變就自動換版。
+ * 產生 asset-manifest.json：版本資訊 + 要離線快取的檔案清單。
+ * public/sw.js（固定不變）在使用者按「立即更新」時才讀取它並下載新版。
  */
-function serviceWorker(): Plugin {
+function assetManifest(): Plugin {
   const publicFiles = ["./", "index.html", "manifest.json", "favicon.ico", "logo192.png", "logo512.png", "logo.svg"];
   return {
-    name: "jimmyskanban-sw",
+    name: "jimmyskanban-asset-manifest",
     apply: "build",
     generateBundle(_options, bundle) {
       const assets = Object.keys(bundle).filter((f) => f !== "index.html");
-      const files = [...publicFiles, ...assets];
-      const version = createHash("sha256").update(files.join("|")).digest("hex").slice(0, 12);
-      const source = `// 由 vite.config.ts 自動產生，請勿手動修改
-const CACHE = "jimmyskanban-${version}";
-const FILES = ${JSON.stringify(files)};
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
-});
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("jimmyskanban-") && k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
-  e.respondWith(
-    // ignoreVary：伺服器常回 Vary: Origin / Accept-Encoding，不忽略會讓離線時找不到快取
-    caches.match(req, { ignoreSearch: true, ignoreVary: true }).then((hit) =>
-      hit ||
-      fetch(req).catch(() => (req.mode === "navigate" ? caches.match("index.html") : undefined))
-    )
-  );
-});
-`;
-      this.emitFile({ type: "asset", fileName: "sw.js", source });
+      const manifest = {
+        app: "JimmysKanban",
+        version: pkg.version,
+        build: buildId,
+        schemaVersion: SCHEMA_VERSION,
+        builtAt: new Date().toISOString(),
+        files: [...publicFiles, ...assets],
+      };
+      this.emitFile({ type: "asset", fileName: "asset-manifest.json", source: JSON.stringify(manifest, null, 2) });
     },
   };
 }
@@ -53,11 +51,15 @@ export default defineConfig(({ mode }) => {
   const single = mode === "single";
   return {
     base: "./",
-    plugins: [react(), ...(single ? [viteSingleFile()] : [serviceWorker()])],
+    plugins: [react(), ...(single ? [viteSingleFile()] : [assetManifest()])],
     resolve: {
       alias: { PersonalKanban: path.resolve(__dirname, "src/PersonalKanban") },
     },
-    define: { __SINGLE_FILE__: JSON.stringify(single) },
+    define: {
+      __SINGLE_FILE__: JSON.stringify(single),
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __BUILD_ID__: JSON.stringify(buildId),
+    },
     publicDir: single ? false : "public",
     build: {
       outDir: single ? "dist-single" : "dist",

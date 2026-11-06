@@ -190,9 +190,10 @@ export const reorderCards = ({
 const str = (v: any, d = "") => (v === undefined || v === null ? d : String(v));
 
 /**
- * 將匯入資料正規化成 Column[]。接受：
+ * 將 Column[] 正規化（補齊欄位、修正型別、去除重複 id）。接受：
  * - 本工具備份檔 { app, columns: [...] }
  * - 原版 Personal Kanban 的 columns 陣列
+ * 版本判斷與資料格式遷移請用 Schema.ts 的 readBackup()。
  */
 export const normalizeColumns = (input: any): Column[] => {
   const list = Array.isArray(input) ? input : input && Array.isArray(input.columns) ? input.columns : null;
@@ -214,6 +215,8 @@ export const normalizeColumns = (input: any): Column[] => {
           const stamp: Stamp = STAMPS.includes(r.stamp) ? r.stamp : "";
           const createdAt = toISO(r.createdAt) || getCreatedAt();
           return {
+            // 保留不認得的欄位：新版本備份檔匯入舊版本時資料不會遺失（向前相容）
+            ...r,
             id: rid,
             title: str(r.title, "Untitled"),
             description: str(r.description),
@@ -226,6 +229,7 @@ export const normalizeColumns = (input: any): Column[] => {
         });
       const wipLimit = parseInt(c.wipLimit, 10);
       return {
+        ...c,
         id,
         title: str(c.title, "Untitled"),
         description: str(c.description),

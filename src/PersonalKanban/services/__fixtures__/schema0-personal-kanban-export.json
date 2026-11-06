@@ -1,0 +1,52 @@
+{
+  "app": "PersonalKanban-export",
+  "origin": "https://personalkanban.js.org",
+  "exportedAt": "2026-11-06T12:00:00.000Z",
+  "keys": [
+    "columns",
+    "dark_mode",
+    "i18nextLng"
+  ],
+  "columns": [
+    {
+      "id": "col-todo",
+      "title": "Todo",
+      "color": "Orange",
+      "description": "原版欄位",
+      "wipEnabled": true,
+      "wipLimit": 5,
+      "createdAt": "03-02-2021 9:15:00 am",
+      "records": [
+        {
+          "id": "rec-1",
+          "color": "Yellow",
+          "title": "寫週報",
+          "description": "多行\n內容",
+          "createdAt": "03-02-2021 9:20:11 am"
+        },
+        {
+          "id": "rec-2",
+          "color": "",
+          "title": "Call vendor",
+          "createdAt": "15-12-2023 4:05:09 pm"
+        }
+      ]
+    },
+    {
+      "id": "col-done",
+      "title": "Completed",
+      "color": "Green",
+      "createdAt": "03-02-2021 9:15:00 am",
+      "records": [
+        {
+          "id": "rec-3",
+          "color": "Indigo",
+          "title": "Done thing",
+          "description": "",
+          "createdAt": "01-01-2022 12:00:00 am"
+        }
+      ]
+    }
+  ],
+  "dark_mode": "false"
+}

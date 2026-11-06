@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "Vor Import",
   "snapshotReason_beforeClear": "Vor Leeren",
   "snapshotReason_beforeRestore": "Vor Wiederherstellen",
-  "csvHeaders": "Spalte,Bereich,Titel,Beschreibung,Stempel,Erstellt,Geändert,Erledigt"
+  "csvHeaders": "Spalte,Bereich,Titel,Beschreibung,Stempel,Erstellt,Geändert,Erledigt",
+  "checkUpdate": "Nach Updates suchen",
+  "currentVersion": "Aktuelle Version",
+  "latestVersion": "Neueste Version",
+  "updateChecking": "Wird geprüft…",
+  "upToDate": "Sie verwenden die neueste Version.",
+  "updateAvailable": "Eine neue Version ist verfügbar.",
+  "updating": "Neue Version wird heruntergeladen…",
+  "updateOffline": "Update-Server nicht erreichbar (offline?). Das Board funktioniert weiterhin offline.",
+  "updateFailed": "Update fehlgeschlagen. Nichts wurde geändert; die aktuelle Version funktioniert weiter.",
+  "updateHint": "Wird nur heruntergeladen, wenn Sie „Jetzt aktualisieren“ drücken. Vorher wird ein Snapshot gespeichert; ändert die neue Version das Datenformat, werden Ihre Daten automatisch aktualisiert. Vorher sichern wird empfohlen.",
+  "updateSingleFileHint": "Dies ist die Einzeldatei-Version und kann sich nicht selbst aktualisieren. Erst sichern, dann die neue Datei herunterladen und die alte ersetzen.",
+  "downloadLatest": "Neueste Einzeldatei herunterladen",
+  "checkAgain": "Erneut prüfen",
+  "updateNow": "Jetzt aktualisieren",
+  "backupNewerSchema": "Diese Sicherung stammt von einer neueren Version (neueres Datenformat). Bitte zuerst die App aktualisieren und dann erneut importieren.",
+  "snapshotReason_beforeUpdate": "Vor Update",
+  "snapshotReason_beforeMigration": "Vor Datenaktualisierung"
 }

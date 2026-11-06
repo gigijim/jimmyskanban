@@ -3,3 +3,6 @@ dist/
 dist-single/
 .DS_Store
 Thumbs.db
+# 使用者的私人資料：絕對不要提交
+old_Data_BKUP/
+*.private.json

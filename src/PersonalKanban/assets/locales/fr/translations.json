@@ -64,5 +64,22 @@
   "snapshotReason_beforeImport": "Avant import",
   "snapshotReason_beforeClear": "Avant effacement",
   "snapshotReason_beforeRestore": "Avant restauration",
-  "csvHeaders": "Colonne,Section,Titre,Description,Tampon,Créé,Modifié,Terminé"
+  "csvHeaders": "Colonne,Section,Titre,Description,Tampon,Créé,Modifié,Terminé",
+  "checkUpdate": "Rechercher des mises à jour",
+  "currentVersion": "Version actuelle",
+  "latestVersion": "Dernière version",
+  "updateChecking": "Vérification…",
+  "upToDate": "Vous avez la dernière version.",
+  "updateAvailable": "Une nouvelle version est disponible.",
+  "updating": "Téléchargement de la nouvelle version…",
+  "updateOffline": "Serveur de mise à jour injoignable (hors ligne ?). Le tableau fonctionne toujours hors ligne.",
+  "updateFailed": "Échec de la mise à jour. Rien n’a été modifié ; la version actuelle continue de fonctionner.",
+  "updateHint": "Le téléchargement n’a lieu que si vous appuyez sur « Mettre à jour ». Un instantané est enregistré avant ; si la nouvelle version change le format des données, vos données sont mises à niveau automatiquement. Une sauvegarde préalable est conseillée.",
+  "updateSingleFileHint": "Ceci est la version fichier unique : elle ne peut pas se mettre à jour seule. Sauvegardez, téléchargez le nouveau fichier et remplacez l’ancien.",
+  "downloadLatest": "Télécharger le dernier fichier unique",
+  "checkAgain": "Vérifier à nouveau",
+  "updateNow": "Mettre à jour",
+  "backupNewerSchema": "Cette sauvegarde provient d’une version plus récente (format de données plus récent). Mettez d’abord l’application à jour, puis réimportez.",
+  "snapshotReason_beforeUpdate": "Avant mise à jour",
+  "snapshotReason_beforeMigration": "Avant mise à niveau des données"
 }

@@ -17,6 +17,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import ListIcon from "@material-ui/icons/List";
 import BackupIcon from "@material-ui/icons/Backup";
 import GetAppIcon from "@material-ui/icons/GetApp";
+import SystemUpdateIcon from "@material-ui/icons/SystemUpdateAlt";
 
 const icons = {
   edit: EditIcon,
@@ -33,6 +34,7 @@ const icons = {
   list: ListIcon,
   backup: BackupIcon,
   getApp: GetAppIcon,
+  systemUpdate: SystemUpdateIcon,
 };
 
 type IconButtonProps = MuiIconButtonProps & {
