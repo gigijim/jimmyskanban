@@ -11,6 +11,12 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.8.1",
+    date: "2026-11-08",
+    tw: ["右上角所有按鈕滑鼠移過去都有說明提示", "新增欄位按鈕放大，並與右側功能按鈕以分隔線區隔", "重新設計資料匯入 / 匯出圖示（資料庫 ⇄ 文件）", "視窗標題改為「Offline-Kanban 離線式個人看板」，不再重複", "刪除欄位改名「刪除整條欄位(含便條)」，跳出紅色警告並先自動存快照", "欄位標題字體放大加粗；進行中 / 已完成改為藍 / 綠彩色標籤，便條數改為同色醒目徽章"],
+    en: ["Tooltips on every toolbar button", "Larger add-column button, separated from the other buttons", "New import / export icon (database ⇄ document)", "Window title is now \"Offline-Kanban 離線式個人看板\" without repetition", "\"Delete whole column (with cards)\" shows a red warning and saves a snapshot first", "Larger column titles; blue / green labels and bold count badges for In progress / Done"],
+  },
+  {
     version: "2.8.0",
     date: "2026-11-08",
     tw: [

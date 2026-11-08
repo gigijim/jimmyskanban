@@ -40,6 +40,8 @@ const loadInitialState = (): Column[] => {
 
 const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
   const [columns, setColumns] = React.useState<Column[]>(loadInitialState);
+  const columnsRef = React.useRef(columns);
+  columnsRef.current = columns;
 
   // ---- 搜尋：只影響畫面，資料仍是完整的 columns
   const { t } = useTranslation();
@@ -139,6 +141,8 @@ const KanbanBoardContainer: React.FC<KanbanBoardContainerProps> = (props) => {
 
   const handleColumnDelete = React.useCallback(
     ({ column }: { column: Column }) => {
+      // 刪除整條欄位前先存一份快照，可從「備份 / 匯入 / 匯出 → 自動快照」還原
+      StorageService.addSnapshot(columnsRef.current, "beforeColumnDelete").catch((e) => console.error("[JimmysKanban] 快照失敗", e));
       setColumns((_columns: Column[]) => {
         const columns = cloneColumns(_columns);
         columns.splice(getColumnIndex(column.id), 1);

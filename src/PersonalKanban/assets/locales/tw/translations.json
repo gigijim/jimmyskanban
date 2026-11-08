@@ -8,7 +8,7 @@
   "cancel": "取消",
   "description": "內容",
   "delete": "刪除",
-  "deleteColumn": "刪除欄位",
+  "deleteColumn": "刪除整條欄位(含便條)",
   "deleteColumnConfirmation": "確定要刪除這個欄位嗎？",
   "deleteRecord": "刪除便條紙",
   "deleteAllRecord": "刪除所有便條紙",
@@ -129,5 +129,10 @@
   "boardTitleEdit": "修改標題",
   "changelog": "版本更新紀錄",
   "changelogCurrent": "目前版本",
-  "changelogGitHub": "前往 GitHub"
+  "changelogGitHub": "前往 GitHub",
+  "language": "切換語言",
+  "deleteColumnWarningTitle": "警告：刪除整條欄位",
+  "deleteColumnWarning": "確定要刪除「{{title}}」這整條欄位嗎？欄位裡的 {{count}} 張便條（含已完成）也會一起刪除。",
+  "deleteColumnIrreversible": "刪除前會自動存一份快照，必要時可從「備份 / 匯入 / 匯出 → 自動快照」還原。",
+  "snapshotReason_beforeColumnDelete": "刪除欄位前"
 }

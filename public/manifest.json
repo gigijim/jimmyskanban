@@ -1,6 +1,6 @@
 {
   "short_name": "JimmysKanban",
-  "name": "JimmysKanban 離線看板",
+  "name": "Offline-Kanban 離線式個人看板",
   "icons": [
     { "src": "favicon.ico", "sizes": "32x32", "type": "image/x-icon" },
     { "src": "logo192.png", "type": "image/png", "sizes": "192x192" },

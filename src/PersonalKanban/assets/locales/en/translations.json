@@ -8,7 +8,7 @@
   "cancel": "Cancel",
   "description": "Description",
   "delete": "Delete",
-  "deleteColumn": "Delete Column",
+  "deleteColumn": "Delete whole column (with cards)",
   "deleteColumnConfirmation": "Do you want to delete column ?",
   "deleteRecord": "Delete Record",
   "deleteAllRecord": "Delete All Records",
@@ -129,5 +129,10 @@
   "boardTitleEdit": "Rename board",
   "changelog": "Changelog",
   "changelogCurrent": "Current",
-  "changelogGitHub": "Open on GitHub"
+  "changelogGitHub": "Open on GitHub",
+  "language": "Language",
+  "deleteColumnWarningTitle": "Warning: delete whole column",
+  "deleteColumnWarning": "Delete the column \"{{title}}\"? Its {{count}} cards (including done ones) will be deleted too.",
+  "deleteColumnIrreversible": "A snapshot is saved first; you can restore it from Backup → Snapshots if needed.",
+  "snapshotReason_beforeColumnDelete": "Before column delete"
 }

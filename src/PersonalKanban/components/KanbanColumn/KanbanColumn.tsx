@@ -63,8 +63,41 @@ const useSectionStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: theme.spacing(0.5),
-    opacity: 0.85,
+    marginBottom: theme.spacing(0.75),
+  },
+  // 區段標籤：進行中（藍）/ 已完成（綠），彩色膠囊一眼可辨
+  pill: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    padding: "2px 10px",
+    borderRadius: 999,
+    fontSize: 13,
+    fontWeight: 700,
+    lineHeight: 1.5,
+    color: "#fff",
+    letterSpacing: 0.5,
+  },
+  pillActive: {
+    backgroundColor: theme.palette.type === "dark" ? "#0A84FF" : "#1565C0",
+  },
+  pillDone: {
+    backgroundColor: theme.palette.type === "dark" ? "#248A3D" : "#2E7D32",
+  },
+  // 便條數：與標籤同色的圓形徽章，數字加大加粗
+  count: {
+    minWidth: 26,
+    height: 26,
+    padding: "0 8px",
+    borderRadius: 999,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 15,
+    fontWeight: 800,
+    color: "#fff",
+    fontVariantNumeric: "tabular-nums",
+    boxShadow: theme.palette.type === "dark" ? "none" : "0 1px 2px rgba(0,0,0,.25)",
   },
   dropArea: {
     minHeight: 40,
@@ -135,8 +168,8 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
   return (
     <>
       <Typography variant="caption" component="div" className={classes.label}>
-        <b>▶ {t("inProgress")}</b>
-        <span>{active.length}</span>
+        <span className={`${classes.pill} ${classes.pillActive}`}>▶ {t("inProgress")}</span>
+        <span className={`${classes.count} ${classes.pillActive}`} title={t("inProgress")}>{active.length}</span>
       </Typography>
       <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
@@ -160,8 +193,8 @@ const KanbanColumnCardList: React.FC<KanbanColumnCardListProps> = (props) => {
       </Droppable>
       <Divider className={classes.divider} />
       <Typography variant="caption" component="div" className={classes.label}>
-        <b>✔ {t("completed")}</b>
-        <span>{done.length}</span>
+        <span className={`${classes.pill} ${classes.pillDone}`}>✔ {t("completed")}</span>
+        <span className={`${classes.count} ${classes.pillDone}`} title={t("completed")}>{done.length}</span>
       </Typography>
       <Droppable droppableId={`${columnId}${DONE_SUFFIX}`}>
         {(provided, snapshot) => (

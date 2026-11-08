@@ -8,7 +8,7 @@
   "cancel": "キャンセル",
   "description": "説明",
   "delete": "削除",
-  "deleteColumn": "列を削除",
+  "deleteColumn": "列ごと削除（カード含む）",
   "deleteColumnConfirmation": "列を削除しますか？",
   "deleteRecord": "レコードを削除する",
   "deleteAllRecord": "すべてのレコードを削除",
@@ -129,5 +129,10 @@
   "boardTitleEdit": "タイトルを変更",
   "changelog": "更新履歴",
   "changelogCurrent": "現在のバージョン",
-  "changelogGitHub": "GitHub を開く"
+  "changelogGitHub": "GitHub を開く",
+  "language": "言語",
+  "deleteColumnWarningTitle": "警告：列ごと削除",
+  "deleteColumnWarning": "「{{title}}」の列を削除しますか？列内の {{count}} 枚のカード（完了済みを含む）も削除されます。",
+  "deleteColumnIrreversible": "削除前にスナップショットを自動保存します。必要ならバックアップ → スナップショットから復元できます。",
+  "snapshotReason_beforeColumnDelete": "列の削除前"
 }

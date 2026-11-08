@@ -19,7 +19,8 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import DeveloperBoardIcon from "@material-ui/icons/DeveloperBoard";
 import InfoIcon from "@material-ui/icons/Info";
 import ListIcon from "@material-ui/icons/List";
-import BackupIcon from "@material-ui/icons/ImportExport"; // 備份 / 匯入 / 匯出：上下雙箭頭
+import Tooltip from "@material-ui/core/Tooltip";
+import BackupIcon from "./DataTransferIcon"; // 備份 / 匯入 / 匯出：資料庫 ⇄ 文件
 import GetAppIcon from "@material-ui/icons/GetApp";
 import SystemUpdateIcon from "@material-ui/icons/Autorenew"; // 檢查更新：循環箭頭
 
@@ -56,11 +57,20 @@ type IconButtonProps = MuiIconButtonProps & {
 const IconButton: React.FC<IconButtonProps> = (props) => {
   const { icon, iconProps = {}, ...rest } = props;
   const Icon = icons[icon];
-  return Icon ? (
-    <MuiIconButton size="small" {...rest}>
+  if (!Icon) return null;
+  const { title, ...buttonProps } = rest;
+  const button = (
+    <MuiIconButton size="small" aria-label={typeof title === "string" ? title : undefined} {...buttonProps}>
       <Icon fontSize="small" {...iconProps} />
     </MuiIconButton>
-  ) : null;
+  );
+  if (!title) return button;
+  // 滑鼠移過去顯示說明；停用的按鈕不會觸發事件，外面包一層 span
+  return (
+    <Tooltip title={title} arrow enterDelay={300}>
+      {buttonProps.disabled ? <span style={{ display: "inline-flex" }}>{button}</span> : button}
+    </Tooltip>
+  );
 };
 
 export default IconButton;

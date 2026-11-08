@@ -9,7 +9,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme as useMuiTheme } from "@material-ui/core/styles";
+import WarningIcon from "@material-ui/icons/Warning";
 
 import Card from "PersonalKanban/components/Card";
 import IconButton from "PersonalKanban/components/IconButton";
@@ -45,7 +46,10 @@ const useColumnHeaderStyles = makeStyles((theme) => {
     },
     title: {
       // 完整顯示標題（可換行），不截斷
-      lineHeight: 1.35,
+      fontSize: 17,
+      fontWeight: 800,
+      letterSpacing: 0.2,
+      lineHeight: 1.3,
       wordBreak: "break-word",
       flex: 1,
       minWidth: 0,
@@ -377,7 +381,8 @@ const Column: React.FC<ColumnProps> = (props) => {
       : ColumnColor[columnColor],
   });
 
-  const [dialog, setDialog] = React.useState({
+  const muiTheme = useMuiTheme();
+  const [dialog, setDialog] = React.useState<{ open: boolean; title: React.ReactNode; content: any; actions: any }>({
     open: false,
     title: "",
     content: null,
@@ -439,16 +444,30 @@ const Column: React.FC<ColumnProps> = (props) => {
   }, []);
 
   const handleOpenDeleteDialog = React.useCallback(() => {
-    const content = <Typography>{t("deleteColumnConfirmation")}</Typography>;
+    const error = muiTheme.palette.error.main;
+    const count = (column.records || []).length;
+    const content = (
+      <>
+        <Typography gutterBottom>
+          {t("deleteColumnWarning", { title: column.title, count })}
+        </Typography>
+        <Typography style={{ color: error, fontWeight: 700 }}>{t("deleteColumnIrreversible")}</Typography>
+      </>
+    );
+    const title = (
+      <Box display="flex" alignItems="center" style={{ color: error, gap: 8 }}>
+        <WarningIcon /> {t("deleteColumnWarningTitle")}
+      </Box>
+    );
     const actions = (
       <>
-        <Button variant="outlined" onClick={handleCloseDialog}>
+        <Button variant="outlined" autoFocus onClick={handleCloseDialog}>
           {t("cancel")}
         </Button>
         &nbsp;
         <Button
           variant="contained"
-          color="primary"
+          style={{ backgroundColor: error, color: muiTheme.palette.error.contrastText }}
           onClick={(e) => {
             handleCloseDialog();
             handleDelete(e);
@@ -459,8 +478,8 @@ const Column: React.FC<ColumnProps> = (props) => {
       </>
     );
 
-    handleOpenDialog({ content, actions, title: t("deleteColumn") });
-  }, [t, handleOpenDialog, handleDelete, handleCloseDialog]);
+    handleOpenDialog({ content, actions, title });
+  }, [t, column, muiTheme, handleOpenDialog, handleDelete, handleCloseDialog]);
 
   const handleOpenEditDialog = React.useCallback(() => {
     const content = (

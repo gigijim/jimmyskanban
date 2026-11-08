@@ -8,7 +8,6 @@ import { useTranslation } from "PersonalKanban/providers/TranslationProvider";
 /** 自訂標題只存在這台裝置（localStorage），不進備份 */
 const KEY = "jimmyskanban.title";
 const MAX = 60;
-const ORIGINAL_DOC_TITLE = typeof document !== "undefined" ? document.title : "";
 
 const load = () => {
   try {
@@ -51,10 +50,6 @@ const BoardTitle: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
   const [draft, setDraft] = React.useState("");
   const fallback = String(t("personalKanban"));
   const title = custom || fallback;
-
-  React.useEffect(() => {
-    document.title = custom || ORIGINAL_DOC_TITLE;
-  }, [custom]);
 
   const start = () => {
     setDraft(title);

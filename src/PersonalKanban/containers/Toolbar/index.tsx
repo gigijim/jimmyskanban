@@ -56,9 +56,14 @@ const AddColumnButton: React.FC<AddColumnButtonProps> = (props) => {
 
   return (
     <Box display="block">
-      <IconButton icon="add" color="primary" onClick={handleOpenDialog}>
-        {t("addColumn")}
-      </IconButton>
+      <IconButton
+        icon="addCircle"
+        color="primary"
+        title={t("addColumn")}
+        iconProps={{ style: { fontSize: 34 } }}
+        style={{ padding: 2 }}
+        onClick={handleOpenDialog}
+      />
       <Dialog onClose={handleCloseDialog} open={open}>
         <DialogContent>
           <ColumnForm onSubmit={handleSubmit} onCancel={handleCloseDialog} />
@@ -101,6 +106,7 @@ const ClearBoardButton: React.FC<ClearBoardButtonProps> = (props) => {
       <IconButton
         icon="delete"
         color="primary"
+        title={t("clearBoard")}
         disabled={disabled}
         onClick={handleOpenDialog}
       ></IconButton>
@@ -137,7 +143,7 @@ const ClearBoardButton: React.FC<ClearBoardButtonProps> = (props) => {
 type LanguageButtonProps = {};
 
 const LanguageButton: React.FC<LanguageButtonProps> = (props) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -158,6 +164,7 @@ const LanguageButton: React.FC<LanguageButtonProps> = (props) => {
     <Box display="block">
       <IconButton
         icon={"language"}
+        title={t("language")}
         aria-controls="language-menu"
         aria-haspopup="true"
         color="inherit"
@@ -252,9 +259,9 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           )}
         </Box>
         <Box display="flex" flexGrow={1} />
-        <Box display="flex">
+        <Box display="flex" alignItems="center">
           <AddColumnButton onSubmit={onNewColumn} />
-          &nbsp;
+          <Divider orientation="vertical" flexItem style={{ margin: "4px 10px" }} />
           <ActivityButton columns={columns} />
           &nbsp;
           <BackupButton columns={columns} onReplaceBoard={onReplaceBoard} />

@@ -29,6 +29,7 @@ export type SnapshotReason =
   | "manual"
   | "beforeImport"
   | "beforeClear"
+  | "beforeColumnDelete"
   | "beforeRestore"
   | "beforeUpdate"
   | "beforeMigration";
