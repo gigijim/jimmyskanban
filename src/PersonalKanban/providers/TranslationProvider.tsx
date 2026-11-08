@@ -3,13 +3,7 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import i18next from "i18next";
 
-import cn from "PersonalKanban/assets/locales/cn/translations.json";
-import de from "PersonalKanban/assets/locales/de/translations.json";
 import en from "PersonalKanban/assets/locales/en/translations.json";
-import es from "PersonalKanban/assets/locales/es/translations.json";
-import fr from "PersonalKanban/assets/locales/fr/translations.json";
-import ind from "PersonalKanban/assets/locales/in/translations.json";
-import ru from "PersonalKanban/assets/locales/ru/translations.json";
 import jp from "PersonalKanban/assets/locales/jp/translations.json";
 import tw from "PersonalKanban/assets/locales/tw/translations.json";
 
@@ -21,16 +15,12 @@ i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
-    fallbackLng: "en",
+    // 只支援繁體中文 / 英文 / 日文；其他中文（含舊版選過的簡體）改用繁體，其餘語言用英文
+    fallbackLng: (code: string) => (/^(zh|cn)/i.test(code || "") ? ["tw", "en"] : ["en"]),
     resources: {
-      cn: { translation: { ...cn } },
-      de: { translation: { ...de } },
       en: { translation: { ...en } },
-      es: { translation: { ...es } },
-      fr: { translation: { ...fr } },
-      in: { translation: { ...ind } },
       jp: { translation: { ...jp } },
-      ru: { translation: { ...ru } },
+      ja: { translation: { ...jp } }, // 瀏覽器語系 ja / ja-JP
       // 繁體中文：瀏覽器語系 zh-TW / zh-HK / zh-Hant / zh 都對應到這裡
       tw: { translation: { ...tw } },
       "zh-TW": { translation: { ...tw } },

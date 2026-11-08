@@ -124,5 +124,10 @@
   "activityMonths": "1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月",
   "switchToDark": "切換為深色模式",
   "switchToLight": "切換為淺色模式",
-  "editColumnHint": "雙擊標題可編輯欄位"
+  "editColumnHint": "雙擊標題可編輯欄位",
+  "boardTitleHint": "點兩下修改標題（只存在這台裝置）",
+  "boardTitleEdit": "修改標題",
+  "changelog": "版本更新紀錄",
+  "changelogCurrent": "目前版本",
+  "changelogGitHub": "前往 GitHub"
 }

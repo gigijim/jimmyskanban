@@ -124,5 +124,10 @@
   "activityMonths": "1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月",
   "switchToDark": "Switch to dark mode",
   "switchToLight": "Switch to light mode",
-  "editColumnHint": "タイトルをダブルクリックして編集"
+  "editColumnHint": "タイトルをダブルクリックして編集",
+  "boardTitleHint": "ダブルクリックでタイトルを変更（この端末のみに保存）",
+  "boardTitleEdit": "タイトルを変更",
+  "changelog": "更新履歴",
+  "changelogCurrent": "現在のバージョン",
+  "changelogGitHub": "GitHub を開く"
 }

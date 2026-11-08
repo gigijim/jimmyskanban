@@ -124,5 +124,10 @@
   "activityMonths": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
   "switchToDark": "Switch to dark mode",
   "switchToLight": "Switch to light mode",
-  "editColumnHint": "Double-click the title to edit"
+  "editColumnHint": "Double-click the title to edit",
+  "boardTitleHint": "Double-click to rename (saved on this device only)",
+  "boardTitleEdit": "Rename board",
+  "changelog": "Changelog",
+  "changelogCurrent": "Current",
+  "changelogGitHub": "Open on GitHub"
 }

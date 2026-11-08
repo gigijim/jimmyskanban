@@ -11,7 +11,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles, useTheme as useMuiTheme } from "@material-ui/core/styles";
 
@@ -25,6 +24,8 @@ import InstallButton from "./InstallButton";
 import UpdateButton from "./UpdateButton";
 import SearchBox from "./SearchBox";
 import ActivityButton from "./ActivityButton";
+import ChangelogButton from "./ChangelogButton";
+import BoardTitle from "./BoardTitle";
 
 type AddColumnButtonProps = {
   onSubmit: any;
@@ -169,15 +170,9 @@ const LanguageButton: React.FC<LanguageButtonProps> = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleChangeLanguage("en")}>English</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("fr")}>Français</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("es")}>Español</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("ru")}>Pусский</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("de")}>Deutsch</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("in")}>हिंदी</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("jp")}>日本語</MenuItem>
         <MenuItem onClick={handleChangeLanguage("zh-TW")}>繁體中文</MenuItem>
-        <MenuItem onClick={handleChangeLanguage("cn")}>简体中文</MenuItem>
+        <MenuItem onClick={handleChangeLanguage("en")}>English</MenuItem>
+        <MenuItem onClick={handleChangeLanguage("jp")}>日本語</MenuItem>
       </Menu>
     </Box>
   );
@@ -196,18 +191,6 @@ const DarkThemeButton: React.FC<{}> = () => {
       title={label}
       aria-label={label}
       onClick={handleToggleDarkTheme}
-    />
-  );
-};
-
-const GitHubButton: React.FC<{}> = () => {
-  return (
-    <IconButton
-      color="inherit"
-      icon="gitHub"
-      component={Link}
-      href="https://github.com/gigijim/jimmyskanban"
-      target="_blank"
     />
   );
 };
@@ -263,9 +246,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
             disableFocusRipple
           />
           &nbsp;
-          <Typography variant={isMobile ? "body1" : "h6"}>
-            <b>{t("personalKanban")}</b>
-          </Typography>
+          <BoardTitle isMobile={isMobile} />
           {onSearchChange && (
             <SearchBox value={searchQuery} resultCount={searchResultCount} onChange={onSearchChange} />
           )}
@@ -289,7 +270,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           &nbsp;
           <DarkThemeButton /> &nbsp;
           <LanguageButton /> &nbsp;
-          <GitHubButton />
+          <ChangelogButton />
         </Box>
       </MuiToolbar>
     </AppBar>
